@@ -96,7 +96,7 @@ var Player = (function() {
 
   Player.prototype.spurtTrail = function() {
     var particle = this.trail.getNext();
-    particle.setPosition(this.ship.position.x, this.ship.position.y, this.ship.position.z);    
+    particle.setPosition(this.ship.position.x, this.ship.position.y, this.ship.position.z);
     var mx = Math.cos(this.ship.rotation.z - this.thrustOffset);
     var my = Math.sin(this.ship.rotation.z - this.thrustOffset);
     particle.setMotion(mx, my, 0);
