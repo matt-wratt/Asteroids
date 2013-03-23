@@ -6,6 +6,7 @@ var Application = (function() {
   var END_GAME = 'end-game';
 
   function Application() {
+    this.entities = [];
     this.init3DStuff();
     this.inputManager = new InputManager();
     this.bindKeys();
@@ -38,7 +39,7 @@ var Application = (function() {
     light.position.set( -800, 900, 300 );
     this.scene.add(light);
 
-    this.renderer = new THREE.WebGLRenderer({antialias: true, clearColor: 0x888888, clearAlpha: 1});
+    this.renderer = new THREE.WebGLRenderer({antialias: true, clearColor: 0x111111, clearAlpha: 1});
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
     self = this;
@@ -67,18 +68,25 @@ var Application = (function() {
         this.animateEndGame();
         break;
     }
+    this.updateEntities();
     this.renderer.render(this.scene, this.camera);
   };
 
+  Application.prototype.updateEntities = function() {
+    for(var i = 0; i < this.entities.length; ++i) {
+      this.entities[i].update(this.inputManager);
+    }
+  };
+
   Application.prototype.animateNewGame = function() {
+    this.entities.length = 0;
     this.map = new Map();
-    this.player = new Player();
-    this.scene.add(this.player.ship);
+    this.player = new Player(this.entities);
+    this.player.addTo(this.scene);
     this.state = GAME;
   };
 
   Application.prototype.animateGame = function() {
-    this.player.update(this.inputManager.actions);
     if(this.inputManager.actions.thrust) console.log('thrust');
     if(this.inputManager.actions.rotate_right) console.log('rotate_right');
     if(this.inputManager.actions.brake) console.log('brake');
