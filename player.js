@@ -13,9 +13,7 @@ var Player = (function() {
 
   Player.prototype.addTo = function(scene) {
     scene.add(this.ship);
-    for(var i = 0; i < this.trail.length; ++i) {
-      scene.add(this.trail[i].particle);
-    }
+    scene.add(this.engineParticleSystem);
   };
 
   Player.prototype.buildShip = function() {
@@ -56,18 +54,22 @@ var Player = (function() {
     context.fillStyle = gradient;
     context.fillRect(0, 0, canvas.width, canvas.height);
 
-    var material = new THREE.ParticleBasicMaterial({map: new THREE.Texture(canvas), blending: THREE.AdditiveBlending});
+    var material = new THREE.ParticleBasicMaterial({size: 20, map: THREE.ImageUtils.loadTexture('spark1.png'), blending: THREE.AdditiveBlending, transparent: true});
+    material.color.setRGB(0.3, 0.3, 1);
     this.trail = [];
     this.trail.next = -1;
     this.trail.getNext = function() {
       this.next = (this.next + 1) % this.length;
       return this[this.next];
     };
+    var particleGeometry = new THREE.Geometry();
     for(var i = 0; i < 500; ++i) {
-      var particle = new Particle(material);
+      var particle = new Particle();
+      particleGeometry.vertices.push(particle.position);
       this.trail.push(particle);
       entities.push(particle);
     }
+    this.engineParticleSystem = new THREE.ParticleSystem(particleGeometry, material);
   };
 
   Player.prototype.update = function(input) {
@@ -92,6 +94,7 @@ var Player = (function() {
     }
     this.ship.position.x += this.motion.x;
     this.ship.position.y += this.motion.y;
+    this.engineParticleSystem.geometry.verticesNeedUpdate = true;
   };
 
   Player.prototype.spurtTrail = function() {

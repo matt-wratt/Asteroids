@@ -27,8 +27,8 @@ var Application = (function() {
   };
 
   Application.prototype.init3DStuff = function() {
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
-    this.camera.position.z = 500;
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
+    this.camera.position.z = 1000;
 
     this.scene = new THREE.Scene();
 
@@ -40,6 +40,7 @@ var Application = (function() {
     this.scene.add(light);
 
     this.renderer = new THREE.WebGLRenderer({antialias: true, clearColor: 0x111111, clearAlpha: 1});
+    // this.renderer = new THREE.CanvasRenderer({clearColor: 0x111111, clearAlpha: 1});
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
     self = this;
@@ -87,14 +88,6 @@ var Application = (function() {
   };
 
   Application.prototype.animateGame = function() {
-    if(this.inputManager.actions.thrust) console.log('thrust');
-    if(this.inputManager.actions.rotate_right) console.log('rotate_right');
-    if(this.inputManager.actions.brake) console.log('brake');
-    if(this.inputManager.actions.rotate_left) console.log('rotate_left');
-    if(this.inputManager.actions.shoot_forwards) console.log('shoot_forwards');
-    if(this.inputManager.actions.shoot_right) console.log('shoot_right');
-    if(this.inputManager.actions.shoot_backwards) console.log('shoot_backwards');
-    if(this.inputManager.actions.shoot_left) console.log('shoot_left');
   };
 
   Application.prototype.animateEndGame = function() {
