@@ -27,7 +27,7 @@ var Application = (function() {
 
   Application.prototype.init3DStuff = function() {
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
-    this.camera.position.z = 200;
+    this.camera.position.z = 500;
 
     this.scene = new THREE.Scene();
 

@@ -5,7 +5,7 @@ var Player = (function() {
     this.motion = new THREE.Vector2(0, 0);
     this.rotationSpeed = 0.1;
     this.thrust = 0.1;
-    this.stoppingPower = 0.7;
+    this.stoppingPower = 0.95;
     this.thrustOffset = -Math.PI / 2;
   }
 
@@ -22,16 +22,26 @@ var Player = (function() {
     tail.scale.x = 0.2;
 
     var ship = new THREE.Object3D();
-    ship.add(body);
-    ship.add(cockpit);
-    ship.add(tail);
+    this.glideAngle = new THREE.Object3D();
+    this.glideAngle.add(body);
+    this.glideAngle.add(cockpit);
+    this.glideAngle.add(tail);
+
+    ship.add(this.glideAngle);
 
     return ship;
   };
 
   Player.prototype.update = function(actions) {
-    if(actions.rotate_right) this.ship.rotation.z -= this.rotationSpeed;
-    if(actions.rotate_left) this.ship.rotation.z += this.rotationSpeed;
+    this.glideAngle.rotation.y = 0;
+    if(actions.rotate_right) {
+      this.ship.rotation.z -= this.rotationSpeed;
+      this.glideAngle.rotation.y = -0.2;
+    }
+    if(actions.rotate_left) {
+      this.ship.rotation.z += this.rotationSpeed;
+      this.glideAngle.rotation.y = 0.2;
+    }
     if(actions.thrust) {
       this.motion.x += Math.cos(this.ship.rotation.z + this.thrustOffset) * this.thrust;
       this.motion.y += Math.sin(this.ship.rotation.z + this.thrustOffset) * this.thrust;
