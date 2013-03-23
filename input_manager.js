@@ -1,20 +1,12 @@
 var InputManager = (function() {
 
-  function bind(func, owner) {
-    return (function(func, owner) {
-      return function() {
-        return func.apply(owner, arguments);
-      }
-    }(func, owner));
-  }
-
   function InputManager() {
     this.bindings = {};
     this.actions = {};
-    addEventListener('keydown', this.onKeyDown)
-    addEventListener('keyup', this.onKeyUp)
     this.onKeyDown = bind(this.onKeyDown, this);
     this.onKeyUp = bind(this.onKeyUp, this);
+    addEventListener('keydown', this.onKeyDown)
+    addEventListener('keyup', this.onKeyUp)
   }
 
   InputManager.prototype.bind = function(keyCode, action) {
