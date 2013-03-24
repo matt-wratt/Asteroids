@@ -11,10 +11,9 @@ var Asteroid = (function() {
       0
     );
     var browns = [
-      new THREE.Color(0x3C4639),
-      new THREE.Color(0x98835B),
-      new THREE.Color(0x45424A),
-      new THREE.Color(0x524026)
+      new THREE.Color(0xffffff),
+      new THREE.Color(0x888888),
+      new THREE.Color(0x666666)
     ]
     var color = browns[Math.floor(Math.random() * browns.length)];
     var ambient = color.clone();
