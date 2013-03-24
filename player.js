@@ -3,7 +3,7 @@ var Player = (function() {
   function Player(entities) {
     entities.push(this);
     this.ship = this.buildShip();
-    this.buildEngineTrail(entities);
+    this.engine = new Engine();
     this.motion = new THREE.Vector2(0, 0);
     this.rotationSpeed = 0.1;
     this.thrust = 0.1;
@@ -13,7 +13,7 @@ var Player = (function() {
 
   Player.prototype.addTo = function(scene) {
     scene.add(this.ship);
-    scene.add(this.engineParticleSystem);
+    scene.add(this.engine.system);
   };
 
   Player.prototype.buildShip = function() {
@@ -39,39 +39,6 @@ var Player = (function() {
     return ship;
   };
 
-  Player.prototype.buildEngineTrail = function(entities) {
-    var canvas = document.createElement( 'canvas' );
-    canvas.width = 16;
-    canvas.height = 16;
-
-    var context = canvas.getContext( '2d' );
-    var gradient = context.createRadialGradient( canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2 );
-    gradient.addColorStop( 0, 'rgba(255,255,255,1)' );
-    gradient.addColorStop( 0.2, 'rgba(0,255,255,1)' );
-    gradient.addColorStop( 0.4, 'rgba(0,0,64,1)' );
-    gradient.addColorStop( 1, 'rgba(0,0,0,1)' );
-
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, canvas.width, canvas.height);
-
-    var material = new THREE.ParticleBasicMaterial({size: 20, map: THREE.ImageUtils.loadTexture('spark1.png'), blending: THREE.AdditiveBlending, transparent: true});
-    material.color.setRGB(0.3, 0.3, 1);
-    this.trail = [];
-    this.trail.next = -1;
-    this.trail.getNext = function() {
-      this.next = (this.next + 1) % this.length;
-      return this[this.next];
-    };
-    var particleGeometry = new THREE.Geometry();
-    for(var i = 0; i < 500; ++i) {
-      var particle = new Particle();
-      particleGeometry.vertices.push(particle.position);
-      this.trail.push(particle);
-      entities.push(particle);
-    }
-    this.engineParticleSystem = new THREE.ParticleSystem(particleGeometry, material);
-  };
-
   Player.prototype.update = function(input) {
     var actions = input.actions;
     this.glideAngle.rotation.y = 0;
@@ -84,7 +51,7 @@ var Player = (function() {
       this.glideAngle.rotation.y = 0.2;
     }
     if(actions.thrust) {
-      this.spurtTrail();
+      this.engineThrust();
       this.motion.x += Math.cos(this.ship.rotation.z + this.thrustOffset) * this.thrust;
       this.motion.y += Math.sin(this.ship.rotation.z + this.thrustOffset) * this.thrust;
     }
@@ -94,15 +61,14 @@ var Player = (function() {
     }
     this.ship.position.x += this.motion.x;
     this.ship.position.y += this.motion.y;
-    this.engineParticleSystem.geometry.verticesNeedUpdate = true;
+    this.engine.update();
   };
 
-  Player.prototype.spurtTrail = function() {
-    var particle = this.trail.getNext();
-    particle.setPosition(this.ship.position.x, this.ship.position.y, this.ship.position.z);
-    var mx = Math.cos(this.ship.rotation.z - this.thrustOffset);
-    var my = Math.sin(this.ship.rotation.z - this.thrustOffset);
-    particle.setMotion(mx, my, 0);
+  Player.prototype.engineThrust = function() {
+    var engine = new THREE.Vector3(0, 25, 0);
+    var position = this.ship.localToWorld(engine);
+    var direction = position.clone().sub(this.ship.position).normalize();
+    this.engine.thrust(position, direction, this.motion);
   };
 
   return Player;
