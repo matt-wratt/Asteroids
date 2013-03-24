@@ -37,7 +37,8 @@ var Engine = (function() {
         position,
         Math.cos(angle) * speed,
         Math.sin(angle) * speed,
-        0
+        0,
+        Math.floor(Math.random() * 50)
       );
     }
   };

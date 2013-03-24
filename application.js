@@ -47,7 +47,7 @@ var Application = (function() {
 
     this.newScene();
 
-    this.renderer = new THREE.WebGLRenderer({antialias: true, clearColor: 0x111111, clearAlpha: 1});
+    this.renderer = new THREE.WebGLRenderer({antialias: true, clearColor: 0x000000, clearAlpha: 1});
     // this.renderer = new THREE.CanvasRenderer({clearColor: 0x111111, clearAlpha: 1});
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
