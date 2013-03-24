@@ -41,6 +41,7 @@ var Asteroid = (function() {
   }
 
   Asteroid.prototype.kill = function() {
+    asteroidKillCount++;
     this.dead = true;
   };
 

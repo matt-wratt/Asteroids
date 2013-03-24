@@ -1,5 +1,7 @@
 var Application = (function() {
 
+  window.asteroidKillCount = 0;
+
   var MENU = 'menu';
   var NEW_GAME = 'new-game';
   var GAME = 'game';
@@ -10,7 +12,7 @@ var Application = (function() {
     this.init3DStuff();
     this.inputManager = new InputManager();
     this.bindKeys();
-    this.state = NEW_GAME;
+    this.state = MENU;
     this.animate = bind(this.animate, this);
     requestAnimationFrame(this.animate);
   }
@@ -23,13 +25,7 @@ var Application = (function() {
     this.inputManager.bind(32, 'guns_guns_guns');
   };
 
-  Application.prototype.init3DStuff = function() {
-    var width = innerWidth;
-    var height = innerHeight;
-    //this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
-    this.camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
-    this.camera.position.z = 1000;
-
+  Application.prototype.newScene = function() {
     this.scene = new THREE.Scene();
 
     ambientLight = new THREE.AmbientLight( 0xffffff );
@@ -38,6 +34,16 @@ var Application = (function() {
     light = new THREE.DirectionalLight( 0xffffff, 0.7 );
     light.position.set( -800, 900, 300 );
     this.scene.add(light);
+  };
+
+  Application.prototype.init3DStuff = function() {
+    var width = innerWidth;
+    var height = innerHeight;
+    //this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
+    this.camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
+    this.camera.position.z = 1000;
+
+    this.newScene();
 
     this.renderer = new THREE.WebGLRenderer({antialias: true, clearColor: 0x111111, clearAlpha: 1});
     // this.renderer = new THREE.CanvasRenderer({clearColor: 0x111111, clearAlpha: 1});
@@ -49,8 +55,6 @@ var Application = (function() {
       self.camera.updateProjectionMatrix();
       self.renderer.setSize(window.innerWidth, window.innerHeight);
     });
-
-    document.body.appendChild(this.renderer.domElement);
   };
 
   Application.prototype.animate = function() {
@@ -79,13 +83,30 @@ var Application = (function() {
     }
   };
 
+  Application.prototype.animateMenu = function() {
+    if(!this.menuAnimated) {
+      this.menuAnimated = true;
+      menu.style.display = 'block';
+      var self = this;
+      newGame.addEventListener('click', function() {
+        self.state = NEW_GAME;
+        self.menuAnimated = false;
+        menu.style.display = 'none';
+
+        document.body.appendChild(self.renderer.domElement);
+      });
+    }
+  };
+
   Application.prototype.playerDied = function() {
     this.state = END_GAME;
   };
 
   Application.prototype.animateNewGame = function() {
+    asteroidKillCount = 0;
     this.entities.length = 0;
     this.player = new Player(this, this.entities);
+    this.player.lives = 5;
     this.player.addTo(this.scene);
     this.map = new Map(this.player, 6, 20);
     this.map.addTo(this.scene);
@@ -97,6 +118,20 @@ var Application = (function() {
   };
 
   Application.prototype.animateEndGame = function() {
+    if(!this.gameEnded) {
+      this.gameEnded = true;
+      this.entities.length = 0;
+      this.newScene();
+      document.body.removeChild(this.renderer.domElement);
+      killCount.innerText = asteroidKillCount
+      endGame.style.display = "block";
+      self = this;
+      setTimeout(function() {
+        self.gameEneded = false;
+        endGame.style.display = 'none';
+        self.state = MENU;
+      }, 3000);
+    }
   };
 
   return Application;
