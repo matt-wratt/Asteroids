@@ -64,7 +64,7 @@ var Player = (function() {
       this.motion.y *= this.stoppingPower;
     }
     if(actions.guns_guns_guns) {
-      this.shoot(); 
+      this.shoot();
     }
     this.ship.position.x += this.motion.x;
     this.ship.position.y += this.motion.y;
@@ -86,6 +86,10 @@ var Player = (function() {
     var position = this.ship.localToWorld(gun);
     var direction = position.clone().sub(this.ship.position).normalize();
     this.guns.shoot(position, direction, this.motion);
+  };
+
+  Player.prototype.getShots = function() {
+    return this.guns.particles;
   };
 
   return Player;

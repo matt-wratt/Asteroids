@@ -81,9 +81,11 @@ var Application = (function() {
 
   Application.prototype.animateNewGame = function() {
     this.entities.length = 0;
-    this.map = new Map();
     this.player = new Player(this.entities);
     this.player.addTo(this.scene);
+    this.map = new Map(this.player, 6, 20);
+    this.map.addTo(this.scene);
+    this.entities.push(this.map);
     this.state = GAME;
   };
 
