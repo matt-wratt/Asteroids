@@ -18,9 +18,9 @@ var Asteroid = (function() {
     ]
     var color = browns[Math.floor(Math.random() * browns.length)];
     var ambient = color.clone();
-    ambient.r *= 0.4;
-    ambient.g *= 0.4;
-    ambient.b *= 0.4;
+    ambient.r *= 0.8;
+    ambient.g *= 0.8;
+    ambient.b *= 0.8;
 
     var map = THREE.ImageUtils.loadCompressedTexture( 'textures/disturb_dxt1_mip.dds' );
     var geometry = new THREE.SphereGeometry(size);

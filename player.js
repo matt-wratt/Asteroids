@@ -36,6 +36,7 @@ var Player = (function() {
   Player.prototype.kill = function() {
     if(new Date().valueOf() > this.godModeEnd) {
       this.lives--;
+      this.engine.explode(this.ship.position);
       if(this.lives == 0) {
         this.app.playerDied();
       } else {
@@ -44,7 +45,6 @@ var Player = (function() {
         this.motion.set(0, 0, 0);
         this.ship.rotation.set(0, 0, Math.PI);
         this.guns.clear();
-        this.engine.clear();
         this.godMode();
       }
     }

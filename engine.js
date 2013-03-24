@@ -23,10 +23,23 @@ var Engine = (function() {
     var particle = this.nextParticle();
     particle.init(
       position,
-      direction.x * 5 + Math.random()  - 0.5 + motion.x,
-      direction.y * 5 + Math.random()  - 0.5 + motion.y,
+      direction.x * 5 + Math.random() - 0.5 + motion.x,
+      direction.y * 5 + Math.random() - 0.5 + motion.y,
       0
     );
+  };
+
+  Engine.prototype.explode = function(position) {
+    for(var i = 0; i < this.particles.length; ++i) {
+      var angle = Math.random() * Math.PI * 2;
+      var speed = Math.random() * 10;
+      this.particles[i].init(
+        position,
+        Math.cos(angle) * speed,
+        Math.sin(angle) * speed,
+        0
+      );
+    }
   };
 
   Engine.prototype.clear = function() {
