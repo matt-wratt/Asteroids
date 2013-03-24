@@ -96,7 +96,9 @@ var Application = (function() {
         menu.style.display = 'none';
         self.inputManager.clearKeys();
         document.body.appendChild(self.renderer.domElement);
-        self.renderer.domElement.webkitRequestFullScreen();
+        if(self.renderer.domElement.webkitRequestFullScreen) {
+          self.renderer.domElement.webkitRequestFullScreen();
+        }
       });
     }
   };
