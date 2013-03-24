@@ -35,6 +35,12 @@ var Guns = (function() {
     }
   };
 
+  Guns.prototype.clear = function() {
+    for(var i = 0; i < this.particles.length; ++i) {
+      this.particles[i].remove();
+    }
+  };
+
   Guns.prototype.update = function() {
     this.system.geometry.verticesNeedUpdate = true;
     for(var i = 0; i < this.particles.length; ++i) {

@@ -1,6 +1,7 @@
 var Player = (function() {
 
-  function Player(entities) {
+  function Player(app, entities) {
+    this.app = app;
     entities.push(this);
     this.ship = this.buildShip();
     this.engine = new Engine();
@@ -10,12 +11,35 @@ var Player = (function() {
     this.thrust = 0.1;
     this.stoppingPower = 0.95;
     this.thrustOffset = -Math.PI / 2;
+    this.radius = 30;
+    this.lives = 5;
+    this.godMode();
   }
 
   Player.prototype.addTo = function(scene) {
     scene.add(this.ship);
     scene.add(this.engine.system);
     scene.add(this.guns.system);
+  };
+
+  Player.prototype.kill = function() {
+    if(new Date().valueOf() > this.godModeEnd) {
+      this.lives--;
+      if(this.lives == 0) {
+        this.app.playerDied();
+      } else {
+        this.ship.position.set(0, 0, 0);
+        this.motion.set(0, 0, 0);
+        this.ship.rotation.set(0, 0, Math.PI);
+        this.guns.clear();
+        this.engine.clear();
+        this.godMode();
+      }
+    }
+  };
+
+  Player.prototype.godMode = function() {
+    this.godModeEnd = new Date().valueOf() + 1000;
   };
 
   Player.prototype.buildShip = function() {

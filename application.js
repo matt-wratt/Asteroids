@@ -79,9 +79,13 @@ var Application = (function() {
     }
   };
 
+  Application.prototype.playerDied = function() {
+    this.state = END_GAME;
+  };
+
   Application.prototype.animateNewGame = function() {
     this.entities.length = 0;
-    this.player = new Player(this.entities);
+    this.player = new Player(this, this.entities);
     this.player.addTo(this.scene);
     this.map = new Map(this.player, 6, 20);
     this.map.addTo(this.scene);

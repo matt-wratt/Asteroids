@@ -39,7 +39,7 @@ var Map = (function() {
     }
     for(var i in this.asteroids) {
       var asteroid = this.asteroids[i];
-      asteroid.update(this);
+      asteroid.update(this, this.player);
     }
   };
 

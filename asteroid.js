@@ -3,6 +3,7 @@ var Asteroid = (function() {
   function Asteroid(size, speed, position) {
     this.speed = speed;
     this.size = size;
+    this.radius = this.size;
     this.rotation = (Math.random() - 0.5) / 10;
     this.direction = new THREE.Vector3(
       (Math.random() - 0.5) * this.speed,
@@ -43,11 +44,19 @@ var Asteroid = (function() {
     this.dead = true;
   };
 
-  Asteroid.prototype.update = function(map) {
+  Asteroid.prototype.update = function(map, player) {
     if(this.dead) {
       this.die(map);
     } else {
+      this.hitTest(player);
       this.updatePosition();
+    }
+  };
+
+  Asteroid.prototype.hitTest = function(player) {
+    var length = player.ship.position.clone().sub(this.mesh.position).length();
+    if(length < this.radius + player.radius) {
+      player.kill();
     }
   };
 
