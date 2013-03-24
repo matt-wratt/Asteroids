@@ -24,7 +24,10 @@ var Application = (function() {
   };
 
   Application.prototype.init3DStuff = function() {
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
+    var width = innerWidth;
+    var height = innerHeight;
+    //this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
+    this.camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
     this.camera.position.z = 1000;
 
     this.scene = new THREE.Scene();

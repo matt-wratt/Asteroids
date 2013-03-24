@@ -7,7 +7,7 @@ var Guns = (function() {
     this.next = -1;
     var particleGeometry = new THREE.Geometry();
     for(var i = 0; i < 500; ++i) {
-      var particle = new Particle();
+      var particle = new Particle(true);
       this.particles.push(particle);
       particleGeometry.vertices.push(particle.position);
     }
@@ -28,7 +28,8 @@ var Guns = (function() {
         position,
         direction.x * 10 + motion.x,
         direction.y * 10 + motion.y,
-        0
+        0,
+        100
       );
       this.nextShot = time + 200;
     }

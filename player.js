@@ -38,6 +38,8 @@ var Player = (function() {
 
     ship.add(this.glideAngle);
 
+    ship.rotation.z += Math.PI;
+
     return ship;
   };
 
@@ -66,6 +68,8 @@ var Player = (function() {
     }
     this.ship.position.x += this.motion.x;
     this.ship.position.y += this.motion.y;
+    if(Math.abs(this.ship.position.x) > innerWidth/2) this.ship.position.x *= -1;
+    if(Math.abs(this.ship.position.y) > innerHeight/2) this.ship.position.y *= -1;
     this.engine.update();
     this.guns.update();
   };
