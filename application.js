@@ -111,7 +111,6 @@ var Application = (function() {
   };
 
   Application.prototype.animateNewGame = function() {
-    asteroidKillCount = 0;
     this.entities.length = 0;
     this.newScene();
     this.player = new Player(this, this.entities);
@@ -133,8 +132,12 @@ var Application = (function() {
       document.body.removeChild(this.renderer.domElement);
       killCount.innerText = asteroidKillCount
       endGame.style.display = "block";
+      this.asteroidCount = 1;
+      this.asteroidSpeed = 10;
+      this.player = null;
       self = this;
       setTimeout(function() {
+        asteroidKillCount = 0;
         self.gameEnded = false;
         endGame.style.display = 'none';
         self.state = MENU;

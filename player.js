@@ -1,8 +1,15 @@
 var Player = (function() {
 
+  var maxLives = 6;
+
   function Player(app, entities) {
     this.app = app;
     entities.push(this);
+    if(app.player) {
+      this.lives = app.player.lives;
+    } else {
+      this.lives = maxLives;
+    }
     this.ship = this.buildShip();
     this.engine = new Engine();
     this.guns = new Guns();
@@ -12,7 +19,6 @@ var Player = (function() {
     this.stoppingPower = 0.95;
     this.thrustOffset = -Math.PI / 2;
     this.radius = 30;
-    this.lives = 5;
     this.godMode();
   }
 
@@ -20,6 +26,7 @@ var Player = (function() {
     scene.add(this.ship);
     scene.add(this.engine.system);
     scene.add(this.guns.system);
+    scene.add(this.livesObj);
   };
 
   Player.prototype.won = function() {
@@ -32,6 +39,7 @@ var Player = (function() {
       if(this.lives == 0) {
         this.app.playerDied();
       } else {
+        this.livesObj.remove(this.livesObj.children[this.lives - 1]);
         this.ship.position.set(0, 0, 0);
         this.motion.set(0, 0, 0);
         this.ship.rotation.set(0, 0, Math.PI);
@@ -67,6 +75,15 @@ var Player = (function() {
     ship.add(this.glideAngle);
 
     ship.rotation.z += Math.PI;
+
+    this.livesObj = new THREE.Object3D();
+    var lifeShip = ship.clone();
+    lifeShip.scale.set(0.4, 0.4, 0.4);
+    lifeShip.position.set(-100, innerHeight/2 - 30, 100);
+    for(var i = 0; i < this.lives - 1; ++i) {
+      lifeShip.translateX(-30);
+      this.livesObj.add(lifeShip.clone());
+    }
 
     return ship;
   };
