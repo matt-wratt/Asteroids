@@ -15,6 +15,13 @@ var Particle = (function() {
     this.speed = this.motion.length();
   }
 
+  Particle.prototype.remove = function() {
+    this.ttl = 0
+    this.speed = 0;
+    this.position.z = 1000;
+    this.motion.set(0, 0, 0); 
+  };
+
   Particle.prototype.update = function() {
     if(this.ttl > 0) {
       this.position.add(this.motion);
@@ -24,9 +31,7 @@ var Particle = (function() {
       }
       this.ttl--;
       if(this.ttl == 0) {
-        this.speed = 0;
-        this.position.z = 1000;
-        this.motion.set(0, 0, 0); 
+        this.remove();
       }
     }
   };

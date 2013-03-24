@@ -52,7 +52,7 @@ var Asteroid = (function() {
   };
 
   Asteroid.prototype.die = function(map) {
-    if(this.size > 10) {
+    if(this.size > 20) {
       var size = this.size * 0.8;
       for(var i = 0; i < 2; ++i) {
         map.addAsteroid(size, this.mesh.position);

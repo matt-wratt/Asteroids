@@ -29,8 +29,11 @@ var Map = (function() {
         caster.far = shot.speed;
         caster.set(shot.position.clone(), shot.motion.clone());
         hits = caster.intersectObject(this.map, true)
-        for(var j = 0; j < hits.length; ++j) {
-          this.asteroids[hits[j].object.id].kill();
+        if(hits.length) {
+          shot.remove();
+          for(var j = 0; j < hits.length; ++j) {
+            this.asteroids[hits[j].object.id].kill();
+          }
         }
       }
     }
