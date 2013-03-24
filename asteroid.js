@@ -13,15 +13,19 @@ var Asteroid = (function() {
     var browns = [
       new THREE.Color(0x3C4639),
       new THREE.Color(0x98835B),
-      new THREE.Color(0x151B1F),
+      new THREE.Color(0x45424A),
       new THREE.Color(0x524026)
     ]
     var color = browns[Math.floor(Math.random() * browns.length)];
     var ambient = color.clone();
-    ambient.r = ambient.r * 0.4;
-    ambient.g = ambient.g * 0.4;
-    ambient.b = ambient.b * 0.4;
-    this.mesh = new THREE.Mesh(new THREE.SphereGeometry(size), new THREE.MeshLambertMaterial({color: color, ambient: ambient}));
+    ambient.r *= 0.4;
+    ambient.g *= 0.4;
+    ambient.b *= 0.4;
+
+    var map = THREE.ImageUtils.loadCompressedTexture( 'textures/disturb_dxt1_mip.dds' );
+    var geometry = new THREE.SphereGeometry(size);
+    var material = new THREE.MeshLambertMaterial({map: map, color: color, ambient: ambient});
+    this.mesh = new THREE.Mesh(geometry, material);
     if(position) {
       this.mesh.position.set(
         position.x,
@@ -30,13 +34,16 @@ var Asteroid = (function() {
       );
     } else {
       this.mesh.position.set(
-        Math.random() * innerWidth - innerWidth / 2,
-        Math.random() * innerHeight - innerHeight / 2,
+        (Math.random() - 0.5) * innerWidth,
+        (Math.random() - 0.5) * innerHeight,
         0
       );
     }
-    this.mesh.rotation.x = Math.random();
-    this.mesh.rotation.y = Math.random();
+    this.mesh.rotation.set(
+      Math.random() - 0.5,
+      Math.random() - 0.5,
+      0
+    );
     this.id = this.mesh.id;
   }
 
@@ -76,8 +83,8 @@ var Asteroid = (function() {
     this.mesh.position.add(this.direction);
     this.mesh.position.z = 0;
     this.mesh.rotation.z += this.rotation;
-    if(Math.abs(this.mesh.position.x) > innerWidth/2) this.mesh.position.x *= -1;
-    if(Math.abs(this.mesh.position.y) > innerHeight/2) this.mesh.position.y *= -1;
+    if(Math.abs(this.mesh.position.x) > innerWidth / 2) this.mesh.position.x *= -1;
+    if(Math.abs(this.mesh.position.y) > innerHeight / 2) this.mesh.position.y *= -1;
   };
 
   return Asteroid;
