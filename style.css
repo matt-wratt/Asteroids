@@ -2,3 +2,17 @@
   padding: 0;
   margin: 0;
 }
+
+h1, h4 {
+  margin-top: 100px;
+}
+
+li {
+  margin-top: 100px;
+}
+
+body {
+  font-family: verdana;
+  color: white;
+  background-color: black;
+}

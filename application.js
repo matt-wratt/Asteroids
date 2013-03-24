@@ -106,7 +106,6 @@ var Application = (function() {
     asteroidKillCount = 0;
     this.entities.length = 0;
     this.player = new Player(this, this.entities);
-    this.player.lives = 5;
     this.player.addTo(this.scene);
     this.map = new Map(this.player, 6, 20);
     this.map.addTo(this.scene);
@@ -127,7 +126,7 @@ var Application = (function() {
       endGame.style.display = "block";
       self = this;
       setTimeout(function() {
-        self.gameEneded = false;
+        self.gameEnded = false;
         endGame.style.display = 'none';
         self.state = MENU;
       }, 3000);
