@@ -20,10 +20,7 @@ var Application = (function() {
     this.inputManager.bind(39, 'rotate_right');
     this.inputManager.bind(40, 'brake');
     this.inputManager.bind(37, 'rotate_left');
-    this.inputManager.bind(87, 'shoot_forwards');
-    this.inputManager.bind(68, 'shoot_right');
-    this.inputManager.bind(83, 'shoot_backwards');
-    this.inputManager.bind(65, 'shoot_left');
+    this.inputManager.bind(32, 'guns_guns_guns');
   };
 
   Application.prototype.init3DStuff = function() {

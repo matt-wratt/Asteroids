@@ -4,6 +4,7 @@ var Player = (function() {
     entities.push(this);
     this.ship = this.buildShip();
     this.engine = new Engine();
+    this.guns = new Guns();
     this.motion = new THREE.Vector2(0, 0);
     this.rotationSpeed = 0.1;
     this.thrust = 0.1;
@@ -14,6 +15,7 @@ var Player = (function() {
   Player.prototype.addTo = function(scene) {
     scene.add(this.ship);
     scene.add(this.engine.system);
+    scene.add(this.guns.system);
   };
 
   Player.prototype.buildShip = function() {
@@ -59,9 +61,13 @@ var Player = (function() {
       this.motion.x *= this.stoppingPower;
       this.motion.y *= this.stoppingPower;
     }
+    if(actions.guns_guns_guns) {
+      this.shoot(); 
+    }
     this.ship.position.x += this.motion.x;
     this.ship.position.y += this.motion.y;
     this.engine.update();
+    this.guns.update();
   };
 
   Player.prototype.engineThrust = function() {
@@ -69,6 +75,13 @@ var Player = (function() {
     var position = this.ship.localToWorld(engine);
     var direction = position.clone().sub(this.ship.position).normalize();
     this.engine.thrust(position, direction, this.motion);
+  };
+
+  Player.prototype.shoot = function() {
+    var gun = new THREE.Vector3(0, -25, 0);
+    var position = this.ship.localToWorld(gun);
+    var direction = position.clone().sub(this.ship.position).normalize();
+    this.guns.shoot(position, direction, this.motion);
   };
 
   return Player;
