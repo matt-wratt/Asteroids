@@ -7,19 +7,19 @@ var Asteroid = (function() {
     this.rotation = (Math.random() - 0.5) / 10;
     this.direction = new THREE.Vector3(
       (Math.random() - 0.5) * this.speed,
-      (Math.random() - 0.5) * this.speed, 
+      (Math.random() - 0.5) * this.speed,
       0
     );
     var browns = [
       new THREE.Color(0xffffff),
-      new THREE.Color(0x888888),
-      new THREE.Color(0x666666)
+      new THREE.Color(0xcccccc),
+      new THREE.Color(0xaaaaaa)
     ]
     var color = browns[Math.floor(Math.random() * browns.length)];
     var ambient = color.clone();
-    ambient.r *= 0.8;
-    ambient.g *= 0.8;
-    ambient.b *= 0.8;
+    ambient.r *= 0.2;
+    ambient.g *= 0.2;
+    ambient.b *= 0.2;
 
     var map = THREE.ImageUtils.loadCompressedTexture( 'textures/disturb_dxt1_mip.dds' );
     var geometry = new THREE.SphereGeometry(size);

@@ -4,6 +4,8 @@ var Map = (function() {
     this.speed = speed;
     this.player = player;
     this.map = new THREE.Object3D();
+    this.particles = new AsteroidExplosion();
+    this.map.add(this.particles.system);
     this.asteroids = {};
     for(var i = 0; i < asteroids; ++i) {
       this.addAsteroid(50);
@@ -32,7 +34,9 @@ var Map = (function() {
         if(hits.length) {
           shot.remove();
           for(var j = 0; j < hits.length; ++j) {
-            this.asteroids[hits[j].object.id].kill();
+            var mesh = hits[j].object;
+            this.particles.explode(mesh.position);
+            this.asteroids[mesh.id].kill();
           }
         }
       }
@@ -46,6 +50,7 @@ var Map = (function() {
     if(!asteroids) {
       this.player.won();
     }
+    this.particles.update();
   };
 
   return Map;
