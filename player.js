@@ -22,6 +22,10 @@ var Player = (function() {
     scene.add(this.guns.system);
   };
 
+  Player.prototype.won = function() {
+    this.app.playerWon();
+  };
+
   Player.prototype.kill = function() {
     if(new Date().valueOf() > this.godModeEnd) {
       this.lives--;

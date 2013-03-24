@@ -13,6 +13,8 @@ var Application = (function() {
     this.inputManager = new InputManager();
     this.bindKeys();
     this.state = MENU;
+    this.asteroidCount = 1;
+    this.asteroidSpeed = 10;
     this.animate = bind(this.animate, this);
     requestAnimationFrame(this.animate);
   }
@@ -102,12 +104,19 @@ var Application = (function() {
     this.state = END_GAME;
   };
 
+  Application.prototype.playerWon = function() {
+    this.asteroidCount += 1;
+    this.asteroidSpeed *= 1.3;
+    this.state = NEW_GAME;
+  };
+
   Application.prototype.animateNewGame = function() {
     asteroidKillCount = 0;
     this.entities.length = 0;
+    this.newScene();
     this.player = new Player(this, this.entities);
     this.player.addTo(this.scene);
-    this.map = new Map(this.player, 6, 20);
+    this.map = new Map(this.player, this.asteroidCount, this.asteroidSpeed);
     this.map.addTo(this.scene);
     this.entities.push(this.map);
     this.state = GAME;

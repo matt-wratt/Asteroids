@@ -37,9 +37,14 @@ var Map = (function() {
         }
       }
     }
+    var asteroids = false;
     for(var i in this.asteroids) {
+      asteroids = true;
       var asteroid = this.asteroids[i];
       asteroid.update(this, this.player);
+    }
+    if(!asteroids) {
+      this.player.won();
     }
   };
 
