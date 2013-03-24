@@ -22,7 +22,7 @@ var Application = (function() {
   Application.prototype.bindKeys = function() {
     this.inputManager.bind(38, 'thrust');
     this.inputManager.bind(39, 'rotate_right');
-    this.inputManager.bind(40, 'brake');
+    this.inputManager.bind(40, 'shields');
     this.inputManager.bind(37, 'rotate_left');
     this.inputManager.bind(32, 'guns_guns_guns');
   };
@@ -42,7 +42,7 @@ var Application = (function() {
     var width = innerWidth;
     var height = innerHeight;
     //this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 5000);
-    this.camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 1000 );
+    this.camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, 1, 2000 );
     this.camera.position.z = 1000;
 
     this.newScene();

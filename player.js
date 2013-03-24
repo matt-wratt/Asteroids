@@ -18,6 +18,7 @@ var Player = (function() {
     this.thrust = 0.1;
     this.stoppingPower = 0.95;
     this.thrustOffset = -Math.PI / 2;
+    this.nextShields = 0;
     this.radius = 30;
     this.godMode();
   }
@@ -47,17 +48,25 @@ var Player = (function() {
         this.guns.clear();
         this.godMode();
       }
+      return true;
     }
+    return false;
   };
 
   Player.prototype.godMode = function() {
-    this.godModeEnd = new Date().valueOf() + 1000;
+    this.godModeEnd = new Date().valueOf() + 2000;
+    this.ship.add(this.shield);
+    this.hasShield = true;
   };
 
   Player.prototype.buildShip = function() {
+    var shield = new THREE.Mesh(new THREE.SphereGeometry(40), new THREE.MeshBasicMaterial({color: 0x0000ff, opacity: 0.3, transparent: true, blending: THREE.AdditiveBlending, wireframe: true}));
     var body = new THREE.Mesh(new THREE.SphereGeometry(30), new THREE.MeshLambertMaterial({color: 0x888888, ambient: 0x333333}));
     var cockpit = new THREE.Mesh(new THREE.SphereGeometry(5), new THREE.MeshLambertMaterial({color: 0x0000ff, ambient: 0x000033}));
     var tail = new THREE.Mesh(new THREE.SphereGeometry(10), new THREE.MeshLambertMaterial({color: 0x888888, ambient: 0x333333}));
+
+    shield.material.blending = 'AdditiveAlphaBlending';
+    this.shield = shield
 
     body.scale.z = 0.3;
     cockpit.position.z = 8;
@@ -104,9 +113,12 @@ var Player = (function() {
       this.motion.x += Math.cos(this.ship.rotation.z + this.thrustOffset) * this.thrust;
       this.motion.y += Math.sin(this.ship.rotation.z + this.thrustOffset) * this.thrust;
     }
-    if(actions.brake) {
-      this.motion.x *= this.stoppingPower;
-      this.motion.y *= this.stoppingPower;
+    if(actions.shields) {
+      var time = new Date().valueOf();
+      if(this.nextShields < time) {
+        this.nextShields = new Date().valueOf() + 10000;
+        this.godMode();
+      }
     }
     if(actions.guns_guns_guns) {
       this.shoot();
@@ -117,6 +129,12 @@ var Player = (function() {
     if(Math.abs(this.ship.position.y) > innerHeight/2) this.ship.position.y *= -1;
     this.engine.update();
     this.guns.update();
+    if(new Date().valueOf() > this.godModeEnd && this.hasShield) {
+      this.hasShield = false;
+      this.ship.remove(this.shield);
+    }
+    this.shield.rotation.x += 0.1;
+    this.shield.rotation.y += 0.1;
   };
 
   Player.prototype.engineThrust = function() {
