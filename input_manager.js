@@ -15,11 +15,19 @@ var InputManager = (function() {
   };
 
   InputManager.prototype.onKeyDown = function(event) {
+    event.preventDefault();
     this.actions[this.bindings[event.keyCode]] = true;
   };
 
   InputManager.prototype.onKeyUp = function(event) {
+    event.preventDefault();
     this.actions[this.bindings[event.keyCode]] = false;
+  };
+
+  InputManager.prototype.clearKeys = function() {
+    for(var i in this.actions) {
+      this.actions[i] = false;
+    }
   };
 
   return InputManager;

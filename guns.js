@@ -1,8 +1,8 @@
 var Guns = (function() {
 
   function Guns() {
-    var material = new THREE.ParticleBasicMaterial({size: 30, map: THREE.ImageUtils.loadTexture('textures/spark1.png'), blending: THREE.AdditiveBlending, transparent: true});
-    material.color.setRGB(1, 1, 0);
+    var material = new THREE.ParticleBasicMaterial({size: 40, map: THREE.ImageUtils.loadTexture('textures/spark1.png'), blending: THREE.AdditiveBlending, transparent: true});
+    material.color.setRGB(0.4, 1, 0.1);
     this.particles = [];
     this.next = -1;
     var particleGeometry = new THREE.Geometry();

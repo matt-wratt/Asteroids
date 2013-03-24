@@ -94,8 +94,9 @@ var Application = (function() {
         self.state = NEW_GAME;
         self.menuAnimated = false;
         menu.style.display = 'none';
-
+        self.inputManager.clearKeys();
         document.body.appendChild(self.renderer.domElement);
+        self.renderer.domElement.webkitRequestFullScreen();
       });
     }
   };
