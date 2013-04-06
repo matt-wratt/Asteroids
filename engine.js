@@ -1,7 +1,7 @@
 var Engine = (function() {
 
   function Engine() {
-    this.sound = SoundManager.loadAsync('/sounds/thrust.wav');
+    this.sound = SoundManager.loadAsync('sounds/thrust.wav');
     this.sound.volume = 0.2;
     var material = new THREE.ParticleBasicMaterial({size: 50, map: THREE.ImageUtils.loadTexture('textures/spark1.png'), blending: THREE.AdditiveBlending, transparent: true});
     material.color.setRGB(0.3, 0.3, 1);

@@ -8,13 +8,13 @@ var Application = (function() {
   var END_GAME = 'end-game';
 
   function Application() {
-    SoundManager.loadAsync('/sounds/alert.wav');
-    SoundManager.loadAsync('/sounds/asteroid_die.wav');
-    SoundManager.loadAsync('/sounds/die.wav');
-    SoundManager.loadAsync('/sounds/gun.wav');
-    SoundManager.loadAsync('/sounds/shield.wav');
-    SoundManager.loadAsync('/sounds/spawn.wav');
-    SoundManager.loadAsync('/sounds/thrust.wav');
+    SoundManager.loadAsync('sounds/alert.wav');
+    SoundManager.loadAsync('sounds/asteroid_die.wav');
+    SoundManager.loadAsync('sounds/die.wav');
+    SoundManager.loadAsync('sounds/gun.wav');
+    SoundManager.loadAsync('sounds/shield.wav');
+    SoundManager.loadAsync('sounds/spawn.wav');
+    SoundManager.loadAsync('sounds/thrust.wav');
     this.entities = [];
     this.init3DStuff();
     this.inputManager = new InputManager();

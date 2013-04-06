@@ -1,7 +1,7 @@
 var AsteroidExplosion = (function() {
 
   function AsteroidExplosion() {
-    this.sound = SoundManager.loadAsync('/sounds/asteroid_die.wav');
+    this.sound = SoundManager.loadAsync('sounds/asteroid_die.wav');
     var material = new THREE.ParticleBasicMaterial({size: 50, map: THREE.ImageUtils.loadTexture('textures/spark1.png'), blending: THREE.AdditiveBlending, transparent: true});
     material.color.setRGB(1, .3, .3);
     this.particles = [];

@@ -4,10 +4,10 @@ var Player = (function() {
 
   function Player(app, entities) {
     this.sounds = {
-      spawn: SoundManager.loadAsync('/sounds/spawn.wav'),
-      shield: SoundManager.loadAsync('/sounds/shield.wav'),
-      alert: SoundManager.loadAsync('/sounds/alert.wav'),
-      death: SoundManager.loadAsync('/sounds/die.wav')
+      spawn: SoundManager.loadAsync('sounds/spawn.wav'),
+      shield: SoundManager.loadAsync('sounds/shield.wav'),
+      alert: SoundManager.loadAsync('sounds/alert.wav'),
+      death: SoundManager.loadAsync('sounds/die.wav')
     };
     this.sounds.shield.volume = 0.5;
     this.sounds.alert.volume = 0.1;
