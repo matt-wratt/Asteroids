@@ -3,6 +3,14 @@ var Player = (function() {
   var maxLives = 6;
 
   function Player(app, entities) {
+    this.sounds = {
+      spawn: SoundManager.loadAsync('/sounds/spawn.wav'),
+      shield: SoundManager.loadAsync('/sounds/shield.wav'),
+      alert: SoundManager.loadAsync('/sounds/alert.wav'),
+      death: SoundManager.loadAsync('/sounds/die.wav')
+    };
+    this.sounds.shield.volume = 0.5;
+    this.sounds.alert.volume = 0.1;
     this.app = app;
     entities.push(this);
     if(app.player) {
@@ -28,6 +36,7 @@ var Player = (function() {
     scene.add(this.engine.system);
     scene.add(this.guns.system);
     scene.add(this.livesObj);
+    this.sounds.spawn.play();
   };
 
   Player.prototype.won = function() {
@@ -36,11 +45,17 @@ var Player = (function() {
 
   Player.prototype.kill = function() {
     if(new Date().valueOf() > this.godModeEnd) {
+      this.sounds.death.play();
       this.lives--;
       this.engine.explode(this.ship.position);
       if(this.lives == 0) {
+        this.sounds.alert.stop();
         this.app.playerDied();
       } else {
+        this.sounds.spawn.play();
+        if(this.lives == 1) {
+          this.sounds.alert.play({loop: true});
+        }
         this.livesObj.remove(this.livesObj.children[this.lives - 1]);
         this.ship.position.set(0, 0, 0);
         this.motion.set(0, 0, 0);
@@ -57,6 +72,7 @@ var Player = (function() {
     this.godModeEnd = new Date().valueOf() + 2000;
     this.ship.add(this.shield);
     this.hasShield = true;
+    this.sounds.shield.play({loop: true});
   };
 
   Player.prototype.buildShip = function() {
@@ -132,6 +148,7 @@ var Player = (function() {
     if(new Date().valueOf() > this.godModeEnd && this.hasShield) {
       this.hasShield = false;
       this.ship.remove(this.shield);
+      this.sounds.shield.stop();
     }
     this.shield.rotation.x += 0.1;
     this.shield.rotation.y += 0.1;

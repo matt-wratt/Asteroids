@@ -1,6 +1,8 @@
 var Guns = (function() {
 
   function Guns() {
+    this.sound = SoundManager.loadAsync('/sounds/gun.wav');
+    this.sound.volume = 0.5;
     var material = new THREE.ParticleBasicMaterial({size: 40, map: THREE.ImageUtils.loadTexture('textures/spark1.png'), blending: THREE.AdditiveBlending, transparent: true});
     material.color.setRGB(0.4, 1, 0.1);
     this.particles = [];
@@ -23,6 +25,7 @@ var Guns = (function() {
   Guns.prototype.shoot = function(position, direction, motion) {
     time = new Date().valueOf();
     if(time > this.nextShot) {
+      this.sound.play();
       var particle = this.nextParticle();
       particle.init(
         position,
