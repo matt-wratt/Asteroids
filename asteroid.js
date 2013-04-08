@@ -1,7 +1,7 @@
 var Asteroid = (function() {
 
   function Asteroid(size, speed, position) {
-    this.speed = speed;
+    this.speed = speed * 100000;
     this.size = size;
     this.radius = this.size;
     this.rotation = (Math.random() - 0.5) / 10;
@@ -25,25 +25,28 @@ var Asteroid = (function() {
     var geometry = new THREE.SphereGeometry(size);
     var material = new THREE.MeshLambertMaterial({map: map, color: color, ambient: ambient});
     this.mesh = new THREE.Mesh(geometry, material);
-    if(position) {
-      this.mesh.position.set(
-        position.x,
-        position.y,
-        0
-      );
-    } else {
-      this.mesh.position.set(
-        (Math.random() - 0.5) * innerWidth,
-        (Math.random() - 0.5) * innerHeight,
-        0
-      );
-    }
     this.mesh.rotation.set(
       Math.random() - 0.5,
       Math.random() - 0.5,
       0
     );
     this.id = this.mesh.id;
+
+    if(!position) {
+      position = {
+        x: (Math.random() - 0.5) * innerWidth,
+        y: (Math.random() - 0.5) * innerHeight
+      };
+    }
+    this.mesh.position.x = position.x;
+    this.mesh.position.y = position.y;
+    this.physBody = PhysicsManager.addBody({
+      userData: this,
+      x: position.x,
+      y: position.y,
+      radius: size
+    });
+    this.physBody.ApplyImpulse(new b2Vec2(this.direction.x, this.direction.y), new b2Vec2(0, 0));
   }
 
   Asteroid.prototype.kill = function() {
@@ -75,15 +78,22 @@ var Asteroid = (function() {
       }
     }
     map.map.remove(this.mesh);
+    PhysicsManager.removeBody(this.physBody);
     delete map.asteroids[this.id];
   };
 
   Asteroid.prototype.updatePosition = function() {
-    this.mesh.position.add(this.direction);
+    var pos = this.physBody.GetCenterPosition();
+    var setPos = false;
+    if(Math.abs(pos.x) > innerWidth / 2) pos.x *= -1, setPos = true;
+    if(Math.abs(pos.y) > innerHeight / 2) pos.y *= -1, setPos = true;
+    if(!pos.x || !pos.y) debugger;
+    this.physBody.SetCenterPosition(pos, 0);
+    this.mesh.position.x = pos.x;
+    this.mesh.position.y = pos.y;
+    //this.mesh.position.add(this.direction);
     this.mesh.position.z = 0;
     this.mesh.rotation.z += this.rotation;
-    if(Math.abs(this.mesh.position.x) > innerWidth / 2) this.mesh.position.x *= -1;
-    if(Math.abs(this.mesh.position.y) > innerHeight / 2) this.mesh.position.y *= -1;
   };
 
   return Asteroid;

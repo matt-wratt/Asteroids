@@ -82,7 +82,6 @@ var Application = (function() {
         this.animateEndGame();
         break;
     }
-    this.updateEntities();
     this.renderer.render(this.scene, this.camera);
   };
 
@@ -132,6 +131,8 @@ var Application = (function() {
   };
 
   Application.prototype.animateGame = function() {
+    this.updateEntities();
+    PhysicsManager.update();
   };
 
   Application.prototype.animateEndGame = function() {
