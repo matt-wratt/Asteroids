@@ -43,6 +43,9 @@ var Application = (function() {
     light = new THREE.DirectionalLight( 0xffffff, 0.7 );
     light.position.set( -800, 900, 300 );
     this.scene.add(light);
+
+    ParticleManager.init();
+    ParticleManager.addTo(this.scene);
   };
 
   Application.prototype.init3DStuff = function() {
@@ -127,6 +130,7 @@ var Application = (function() {
     this.map = new Map(this.player, this.asteroidCount, this.asteroidSpeed);
     this.map.addTo(this.scene);
     this.entities.push(this.map);
+    this.entities.push(ParticleManager);
     this.state = GAME;
   };
 

@@ -1,6 +1,7 @@
 var Asteroid = (function() {
 
   function Asteroid(size, speed, position) {
+    this.sound = SoundManager.loadAsync('sounds/asteroid_die.wav');
     this.speed = speed * 100000;
     this.size = size;
     this.radius = this.size;
@@ -77,6 +78,8 @@ var Asteroid = (function() {
         map.addAsteroid(size, this.mesh.position);
       }
     }
+    this.sound.play();
+    ParticleManager.explode(this.mesh.position, new THREE.Color(0xdd380c), this.size * 10);
     map.map.remove(this.mesh);
     PhysicsManager.removeBody(this.physBody);
     delete map.asteroids[this.id];
@@ -91,7 +94,6 @@ var Asteroid = (function() {
     this.physBody.SetCenterPosition(pos, 0);
     this.mesh.position.x = pos.x;
     this.mesh.position.y = pos.y;
-    //this.mesh.position.add(this.direction);
     this.mesh.position.z = 0;
     this.mesh.rotation.z += this.rotation;
   };
