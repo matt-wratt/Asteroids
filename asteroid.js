@@ -50,51 +50,53 @@ var Asteroid = (function() {
     this.physBody.ApplyImpulse(new Box2D.Common.Math.b2Vec2(this.direction.x, this.direction.y), new Box2D.Common.Math.b2Vec2(0, 0));
   }
 
-  Asteroid.prototype.kill = function() {
-    asteroidKillCount++;
-    this.dead = true;
-  };
+  Asteroid.prototype = {
+    kill: function() {
+      asteroidKillCount++;
+      this.dead = true;
+    },
 
-  Asteroid.prototype.update = function(map, player) {
-    if(this.dead) {
-      this.die(map);
-    } else {
-      this.hitTest(player);
-      this.updatePosition();
-    }
-  };
-
-  Asteroid.prototype.hitTest = function(player) {
-    var length = player.ship.position.clone().sub(this.mesh.position).length();
-    if(length < this.radius + player.radius) {
-      player.kill();
-    }
-  };
-
-  Asteroid.prototype.die = function(map) {
-    if(this.size > 20) {
-      var size = this.size * 0.8;
-      for(var i = 0; i < 2; ++i) {
-        map.addAsteroid(size, this.mesh.position);
+    update: function(map, player) {
+      if(this.dead) {
+        this.die(map);
+      } else {
+        this.hitTest(player);
+        this.updatePosition();
       }
-    }
-    this.sound.play();
-    ParticleManager.explode(this.mesh.position, new THREE.Color(0xdd380c), this.size * 10);
-    map.map.remove(this.mesh);
-    PhysicsManager.removeBody(this.physBody);
-    delete map.asteroids[this.id];
-  };
+    },
 
-  Asteroid.prototype.updatePosition = function() {
-    var pos = this.physBody.GetPosition();
-    var setPos = false;
-    if(Math.abs(pos.x) > innerWidth / 2) pos.x *= -1, setPos = true;
-    if(Math.abs(pos.y) > innerHeight / 2) pos.y *= -1, setPos = true;
-    this.physBody.SetPosition(pos, 0);
-    this.mesh.position.x = pos.x;
-    this.mesh.position.y = pos.y;
-    this.mesh.position.z = 0;
-    this.mesh.rotation.z += this.rotation;
+    hitTest: function(player) {
+      var length = player.ship.position.clone().sub(this.mesh.position).length();
+      if(length < this.radius + player.radius) {
+        player.kill();
+      }
+    },
+
+    die: function(map) {
+      if(this.size > 20) {
+        var size = this.size * 0.8;
+        for(var i = 0; i < 2; ++i) {
+          map.addAsteroid(size, this.mesh.position);
+        }
+      }
+      this.sound.play();
+      ParticleManager.explode(this.mesh.position, new THREE.Color(0xdd380c), this.size * 10);
+      map.map.remove(this.mesh);
+      PhysicsManager.removeBody(this.physBody);
+      delete map.asteroids[this.id];
+    },
+
+    updatePosition: function() {
+      var pos = this.physBody.GetPosition();
+      var setPos = false;
+      if(Math.abs(pos.x) > innerWidth / 2) pos.x *= -0.99, setPos = true;
+      if(Math.abs(pos.y) > innerHeight / 2) pos.y *= -0.99, setPos = true;
+      this.physBody.SetPosition(pos, 0);
+      this.mesh.position.x = pos.x;
+      this.mesh.position.y = pos.y;
+      this.mesh.position.z = 0;
+      this.mesh.rotation.z += this.rotation;
+    }
   };
 
   return Asteroid;
