@@ -160,6 +160,7 @@ var Player = (function() {
       var engine = new THREE.Vector3(0, 35, 0);
       var position = this.ship.localToWorld(engine);
       var direction = position.clone().sub(this.ship.position).normalize();
+      direction.multiplyScalar(5);
       direction.add(this.motion)
       direction.z = 0;
       if(!this.sounds.engine.playing()) {
