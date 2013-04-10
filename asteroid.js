@@ -47,7 +47,7 @@ var Asteroid = (function() {
       y: position.y,
       radius: size
     });
-    this.physBody.ApplyImpulse(new b2Vec2(this.direction.x, this.direction.y), new b2Vec2(0, 0));
+    this.physBody.ApplyImpulse(new Box2D.Common.Math.b2Vec2(this.direction.x, this.direction.y), new Box2D.Common.Math.b2Vec2(0, 0));
   }
 
   Asteroid.prototype.kill = function() {
@@ -86,12 +86,11 @@ var Asteroid = (function() {
   };
 
   Asteroid.prototype.updatePosition = function() {
-    var pos = this.physBody.GetCenterPosition();
+    var pos = this.physBody.GetPosition();
     var setPos = false;
     if(Math.abs(pos.x) > innerWidth / 2) pos.x *= -1, setPos = true;
     if(Math.abs(pos.y) > innerHeight / 2) pos.y *= -1, setPos = true;
-    if(!pos.x || !pos.y) debugger;
-    this.physBody.SetCenterPosition(pos, 0);
+    this.physBody.SetPosition(pos, 0);
     this.mesh.position.x = pos.x;
     this.mesh.position.y = pos.y;
     this.mesh.position.z = 0;
