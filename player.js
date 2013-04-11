@@ -1,6 +1,7 @@
 var Player = (function() {
 
   var maxLives = 6;
+  var Vec2 = Box2D.Common.Math.b2Vec2;
 
   function Player(app, entities) {
     this.sounds = {
@@ -22,7 +23,7 @@ var Player = (function() {
     }
     this.ship = this.buildShip();
     this.guns = new Guns();
-    this.motion = new THREE.Vector2(0, 0);
+    this.motion = new THREE.Vector3();
     this.rotationSpeed = 0.1;
     this.thrust = 0.1;
     this.stoppingPower = 0.95;
@@ -30,6 +31,13 @@ var Player = (function() {
     this.nextShields = 0;
     this.radius = 30;
     this.godMode();
+    this.physBody = new PhysicsBody({
+      userData: this,
+      x: 0,
+      y: 0,
+      radius: 30,
+      angularDamping: 1.0
+    });
   }
 
   Player.prototype = {
@@ -58,8 +66,8 @@ var Player = (function() {
             this.sounds.alert.play({loop: true});
           }
           this.livesObj.remove(this.livesObj.children[this.lives - 1]);
-          this.ship.position.set(0, 0, 0);
-          this.motion.set(0, 0, 0);
+          this.physBody.teleport(new THREE.Vector3());
+          this.physBody.clearForces();
           this.ship.rotation.set(0, 0, Math.PI);
           this.guns.clear();
           this.godMode();
@@ -70,6 +78,7 @@ var Player = (function() {
     },
 
     godMode: function() {
+      if(this.hasShield) return;
       this.godModeEnd = new Date().valueOf() + 2000;
       this.ship.add(this.shield);
       this.hasShield = true;
@@ -83,7 +92,7 @@ var Player = (function() {
       var tail = new THREE.Mesh(new THREE.SphereGeometry(10), new THREE.MeshLambertMaterial({color: 0x888888, ambient: 0x333333}));
 
       shield.material.blending = 'AdditiveAlphaBlending';
-      this.shield = shield
+      this.shield = shield;
 
       body.scale.z = 0.3;
       cockpit.position.z = 8;
@@ -116,6 +125,21 @@ var Player = (function() {
 
     update: function(input) {
       var actions = input.actions;
+
+      if(actions.shields) {
+        var time = new Date().valueOf();
+        if(this.nextShields < time) {
+          this.nextShields = new Date().valueOf() + 10000;
+          this.godMode();
+        }
+      }
+      this.updateShields();
+
+      if(actions.guns_guns_guns) {
+        this.shoot();
+      }
+      this.guns.update();
+
       this.glideAngle.rotation.y = 0;
       if(actions.rotate_right) {
         this.ship.rotation.z -= this.rotationSpeed;
@@ -127,26 +151,13 @@ var Player = (function() {
       }
       if(actions.thrust) {
         this.engineThrust();
-        this.motion.x += Math.cos(this.ship.rotation.z + this.thrustOffset) * this.thrust;
-        this.motion.y += Math.sin(this.ship.rotation.z + this.thrustOffset) * this.thrust;
       } else {
         this.sounds.engine.stop();
       }
-      if(actions.shields) {
-        var time = new Date().valueOf();
-        if(this.nextShields < time) {
-          this.nextShields = new Date().valueOf() + 10000;
-          this.godMode();
-        }
-      }
-      if(actions.guns_guns_guns) {
-        this.shoot();
-      }
-      this.ship.position.x += this.motion.x;
-      this.ship.position.y += this.motion.y;
-      if(Math.abs(this.ship.position.x) > innerWidth/2) this.ship.position.x *= -1;
-      if(Math.abs(this.ship.position.y) > innerHeight/2) this.ship.position.y *= -1;
-      this.guns.update();
+      this.updatePosition();
+    },
+
+    updateShields: function() {
       if(new Date().valueOf() > this.godModeEnd && this.hasShield) {
         this.hasShield = false;
         this.ship.remove(this.shield);
@@ -156,13 +167,24 @@ var Player = (function() {
       this.shield.rotation.y += 0.1;
     },
 
+    updatePosition: function() {
+      this.physBody.positionObject(this.ship);
+      this.physBody.setAngle(this.ship.rotation.z);
+    },
+
     engineThrust: function() {
       var engine = new THREE.Vector3(0, 35, 0);
       var position = this.ship.localToWorld(engine);
+      var angle = this.ship.rotation.z - Math.PI / 2;
+      var f = 20000;
+      var force = new THREE.Vector2(
+        Math.cos(angle) * f,
+        Math.sin(angle) * f
+      );
+      this.physBody.applyForce(force);
       var direction = position.clone().sub(this.ship.position).normalize();
       direction.multiplyScalar(5);
-      direction.add(this.motion)
-      direction.z = 0;
+      direction.add(this.physBody.motion())
       if(!this.sounds.engine.playing()) {
         this.sounds.engine.play({loop: true});
       }
@@ -173,7 +195,7 @@ var Player = (function() {
       var gun = new THREE.Vector3(0, -25, 0);
       var position = this.ship.localToWorld(gun);
       var direction = position.clone().sub(this.ship.position).normalize();
-      this.guns.shoot(position, direction, this.motion);
+      this.guns.shoot(position, direction, this.physBody.motion());
     },
 
     getShots: function() {
