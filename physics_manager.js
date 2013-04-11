@@ -22,6 +22,18 @@ var PhysicsManager = (function() {
     this.world = new World(gravity, false);
   }
 
+  PhysicsManager.prototype.addContactListener = function (callbacks) {
+    var listener = new Box2D.Dynamics.b2ContactListener();
+
+    if(callbacks.PostSolve) listener.PostSolve = function (contact, impulse) {
+        callbacks.PostSolve(contact.GetFixtureA().GetBody(),
+                            contact.GetFixtureB().GetBody(),
+                            impulse.normalImpulses[0]);
+    };
+
+    this.world.SetContactListener(listener);
+  };
+
   PhysicsManager.prototype.addBody = function(entityDef) {
     var bodyDef = new BodyDef();
 

@@ -15,7 +15,7 @@ var Asteroid = (function() {
       new THREE.Color(0xffffff),
       new THREE.Color(0xcccccc),
       new THREE.Color(0xaaaaaa)
-    ]
+    ];
     var color = browns[Math.floor(Math.random() * browns.length)];
     var ambient = color.clone();
     ambient.r *= 0.2;
@@ -42,7 +42,7 @@ var Asteroid = (function() {
     this.mesh.position.x = position.x;
     this.mesh.position.y = position.y;
     this.physBody = new PhysicsBody({
-      userData: this,
+      userData: {ent: this},
       x: position.x,
       y: position.y,
       radius: size
@@ -56,19 +56,11 @@ var Asteroid = (function() {
       this.dead = true;
     },
 
-    update: function(map, player) {
+    update: function(map) {
       if(this.dead) {
         this.die(map);
       } else {
-        this.hitTest(player);
         this.updatePosition();
-      }
-    },
-
-    hitTest: function(player) {
-      var length = player.ship.position.clone().sub(this.mesh.position).length();
-      if(length < this.radius + player.radius) {
-        player.kill();
       }
     },
 

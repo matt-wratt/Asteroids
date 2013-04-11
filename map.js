@@ -42,7 +42,7 @@ var Map = (function() {
     for(var i in this.asteroids) {
       asteroids = true;
       var asteroid = this.asteroids[i];
-      asteroid.update(this, this.player);
+      asteroid.update(this);
     }
     if(!asteroids) {
       this.player.won();

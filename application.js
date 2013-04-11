@@ -22,6 +22,26 @@ var Application = (function() {
     this.state = MENU;
     this.asteroidCount = 1;
     this.asteroidSpeed = 10;
+
+    PhysicsManager.addContactListener({
+      PostSolve: function (bodyA, bodyB, impulse) {
+        var uA = bodyA ? bodyA.GetUserData() : null;
+        var uB = bodyB ? bodyB.GetUserData() : null;
+
+        if (uA !== null) {
+          if (uA.ent !== null && uA.ent.onTouch) {
+            uA.ent.onTouch(bodyB, null, impulse);
+          }
+        }
+
+        if (uB !== null) {
+          if (uB.ent !== null && uB.ent.onTouch) {
+            uB.ent.onTouch(bodyA, null, impulse);
+          }
+        }
+      }
+    });
+
     this.animate = bind(this.animate, this);
     requestAnimationFrame(this.animate);
   }

@@ -30,9 +30,10 @@ var Player = (function() {
     this.thrustOffset = -Math.PI / 2;
     this.nextShields = 0;
     this.radius = 30;
+    this.dead = false;
     this.godMode();
     this.physBody = new PhysicsBody({
-      userData: this,
+      userData: {ent: this},
       x: 0,
       y: 0,
       radius: 30,
@@ -52,29 +53,36 @@ var Player = (function() {
       this.app.playerWon();
     },
 
-    kill: function() {
+    onTouch: function() {
+      this.die();
+    },
+
+    die: function() {
       if(new Date().valueOf() > this.godModeEnd) {
-        this.sounds.death.play();
-        this.lives--;
-        ParticleManager.explode(this.ship.position, new THREE.Color(0x154492), 1000);
-        if(this.lives == 0) {
-          this.sounds.alert.stop();
-          this.app.playerDied();
-        } else {
-          this.sounds.spawn.play();
-          if(this.lives == 1) {
-            this.sounds.alert.play({loop: true});
-          }
-          this.livesObj.remove(this.livesObj.children[this.lives - 1]);
-          this.physBody.teleport(new THREE.Vector3());
-          this.physBody.clearForces();
-          this.ship.rotation.set(0, 0, Math.PI);
-          this.guns.clear();
-          this.godMode();
-        }
-        return true;
+        this.dead = true;
       }
-      return false;
+    },
+
+    kill: function() {
+      this.dead = false;
+      this.sounds.death.play();
+      this.lives--;
+      ParticleManager.explode(this.ship.position, new THREE.Color(0x154492), 1000);
+      if(this.lives == 0) {
+        this.sounds.alert.stop();
+        this.app.playerDied();
+      } else {
+        this.sounds.spawn.play();
+        if(this.lives == 1) {
+          this.sounds.alert.play({loop: true});
+        }
+        this.livesObj.remove(this.livesObj.children[this.lives - 1]);
+        this.physBody.teleport(new THREE.Vector3());
+        this.physBody.clearForces();
+        this.ship.rotation.set(0, 0, Math.PI);
+        this.guns.clear();
+        this.godMode();
+      }
     },
 
     godMode: function() {
@@ -124,6 +132,11 @@ var Player = (function() {
     },
 
     update: function(input) {
+      if(this.dead) {
+        this.kill();
+        return;
+      }
+
       var actions = input.actions;
 
       if(actions.shields) {
