@@ -22,61 +22,63 @@ var PhysicsManager = (function() {
     this.world = new World(gravity, false);
   }
 
-  PhysicsManager.prototype.addContactListener = function (callbacks) {
-    var listener = new Box2D.Dynamics.b2ContactListener();
+  PhysicsManager.prototype = {
+    addContactListener: function (callbacks) {
+      var listener = new Box2D.Dynamics.b2ContactListener();
 
-    if(callbacks.PostSolve) listener.PostSolve = function (contact, impulse) {
-        callbacks.PostSolve(contact.GetFixtureA().GetBody(),
-                            contact.GetFixtureB().GetBody(),
-                            impulse.normalImpulses[0]);
-    };
+      if(callbacks.PostSolve) listener.PostSolve = function (contact, impulse) {
+          callbacks.PostSolve(contact.GetFixtureA().GetBody(),
+                              contact.GetFixtureB().GetBody(),
+                              impulse.normalImpulses[0]);
+      };
 
-    this.world.SetContactListener(listener);
+      this.world.SetContactListener(listener);
+    },
+
+    addBody: function(entityDef) {
+      var bodyDef = new BodyDef();
+
+      bodyDef.position.Set(entityDef.x, entityDef.y);
+
+      if(entityDef.userData) bodyDef.userData = entityDef.userData;
+      if(entityDef.angularDamping) bodyDef.angularDamping = entityDef.angularDamping;
+
+      bodyDef.type = Body.b2_dynamicBody;
+
+      var body = this.registerBody(bodyDef);
+
+      var fixtureDefinition = new FixtureDef();
+
+      fixtureDefinition.density = 1.0;
+      fixtureDefinition.friction = 0;
+      fixtureDefinition.restitution = 1.0;
+
+      fixtureDefinition.shape = new CircleShape();
+      fixtureDefinition.shape.SetRadius(entityDef.radius);
+
+      body.CreateFixture(fixtureDefinition);
+
+      return body;
+    },
+
+    registerBody: function(bodyDef) {
+      var body = this.world.CreateBody(bodyDef);
+      return body;
+    },
+
+    update: function() {
+      var start = Date.now();
+
+      this.world.Step(this.PHYSICS_LOOP_HZ, 10, 10);
+      this.world.ClearForces();
+
+      return(Date.now() - start);
+    },
+
+    removeBody: function(obj) {
+      this.world.DestroyBody(obj);
+    }
   };
-
-  PhysicsManager.prototype.addBody = function(entityDef) {
-    var bodyDef = new BodyDef();
-
-    bodyDef.position.Set(entityDef.x, entityDef.y);
-
-    if(entityDef.userData) bodyDef.userData = entityDef.userData;
-    if(entityDef.angularDamping) bodyDef.angularDamping = entityDef.angularDamping;
-
-    bodyDef.type = Body.b2_dynamicBody;
-
-    var body = this.registerBody(bodyDef);
-
-    var fixtureDefinition = new FixtureDef();
-
-    fixtureDefinition.density = 1.0;
-    fixtureDefinition.friction = 0;
-    fixtureDefinition.restitution = 1.0;
-
-    fixtureDefinition.shape = new CircleShape();
-    fixtureDefinition.shape.SetRadius(entityDef.radius);
-
-    body.CreateFixture(fixtureDefinition);
-
-    return body;
-  };
-
-  PhysicsManager.prototype.registerBody = function(bodyDef) {
-    var body = this.world.CreateBody(bodyDef);
-    return body;
-  };
-
-  PhysicsManager.prototype.update = function() {
-    var start = Date.now();
-
-    this.world.Step(this.PHYSICS_LOOP_HZ, 10, 10);
-    this.world.ClearForces();
-
-    return(Date.now() - start);
-  };
-  
-  PhysicsManager.prototype.removeBody = function(obj) {
-    this.world.DestroyBody(obj);
-  }
 
   return new PhysicsManager;
 
