@@ -148,7 +148,6 @@ var PhysicsBody = (function() {
       var pos = new Vec2();
       pos.SetV(this.body.GetPosition());
       pos.Subtract(this.pos);
-      console.log(pos, this.body.GetPosition(), this.pos, to3Vector3(pos, invScale));
       return to3Vector3(pos, invScale);
     },
 
