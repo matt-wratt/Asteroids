@@ -3,29 +3,24 @@ var Player = (function() {
   var maxLives = 6;
   var Vec2 = Box2D.Common.Math.b2Vec2;
 
-  function Player(app, entities) {
+  function Player() {
     this.sounds = {
       spawn: SoundManager.loadAsync('sounds/spawn.wav'),
       shield: SoundManager.loadAsync('sounds/shield.wav'),
       alert: SoundManager.loadAsync('sounds/alert.wav'),
       death: SoundManager.loadAsync('sounds/die.wav'),
+      shot: SoundManager.loadAsync('sounds/gun.wav'),
       engine: SoundManager.loadAsync('sounds/thrust.wav')
     };
     this.sounds.shield.volume = 0.5;
     this.sounds.alert.volume = 0.1;
+    this.sounds.shot.volume = 0.5;
     this.sounds.engine.volume = 0.2;
-    this.app = app;
-    entities.push(this);
-    if(app.player) {
-      this.lives = app.player.lives;
-    } else {
-      this.lives = maxLives;
-    }
+    this.lives = maxLives;
     this.ship = this.buildShip();
-    this.guns = new Guns();
+    this.nextShot = 0;
     this.motion = new THREE.Vector3();
     this.rotationSpeed = 0.1;
-    this.thrust = 0.1;
     this.stoppingPower = 0.95;
     this.thrustOffset = -Math.PI / 2;
     this.nextShields = 0;
@@ -33,28 +28,33 @@ var Player = (function() {
     this.dead = false;
     this.godMode();
     this.physBody = new PhysicsBody({
+      group: 'player',
+      hits: ['asteroid'],
       userData: {ent: this},
       x: 0,
       y: 0,
       radius: 30,
       angularDamping: 1.0
     });
+    this.weapon = new Weapon({
+      owner: this,
+      texture: 'textures/spark1.png',
+      delay: 200,
+      position: this.gunPosition,
+      radius: 1,
+      ttl: 100
+    });
+    Game.scene.add(this.ship);
+    Game.entities.add(this);
   }
 
   Player.prototype = {
-    addTo: function(scene) {
-      scene.add(this.ship);
-      scene.add(this.guns.system);
-      scene.add(this.livesObj);
-      this.sounds.spawn.play();
-    },
 
-    won: function() {
-      this.app.playerWon();
-    },
-
-    onTouch: function() {
-      this.die();
+    onTouch: function(body) {
+      var ent = body.GetUserData().ent;
+      if(!(ent.owner && ent.owner == this)) {
+        this.die();
+      }
     },
 
     die: function() {
@@ -67,20 +67,18 @@ var Player = (function() {
       this.dead = false;
       this.sounds.death.play();
       this.lives--;
-      ParticleManager.explode(this.ship.position, new THREE.Color(0x154492), 1000);
+      Game.particles.explode(this.ship.position, new THREE.Color(0x154492), 1000);
       if(this.lives == 0) {
         this.sounds.alert.stop();
-        this.app.playerDied();
+        Game.lost();
       } else {
         this.sounds.spawn.play();
         if(this.lives == 1) {
           this.sounds.alert.play({loop: true});
         }
-        this.livesObj.remove(this.livesObj.children[this.lives - 1]);
         this.physBody.teleport(new THREE.Vector3());
         this.physBody.clearForces();
         this.ship.rotation.set(0, 0, Math.PI);
-        this.guns.clear();
         this.godMode();
       }
     },
@@ -102,6 +100,9 @@ var Player = (function() {
       shield.material.blending = 'AdditiveAlphaBlending';
       this.shield = shield;
 
+      this.gunPosition = new THREE.Object3D();
+      this.gunPosition.position.set(0, -35, 0);
+
       body.scale.z = 0.3;
       cockpit.position.z = 8;
       cockpit.scale.y = 2;
@@ -119,54 +120,51 @@ var Player = (function() {
 
       ship.rotation.z += Math.PI;
 
-      this.livesObj = new THREE.Object3D();
-      var lifeShip = ship.clone();
-      lifeShip.scale.set(0.4, 0.4, 0.4);
-      lifeShip.position.set(-100, innerHeight/2 - 30, 100);
-      for(var i = 0; i < this.lives - 1; ++i) {
-        //lifeShip.translateX(-30);
-        this.livesObj.add(lifeShip.clone());
-      }
+      ship.add(this.gunPosition);
 
       return ship;
     },
 
-    update: function(input) {
+    thrust: function() {
+      this.engineThrust();
+    },
+
+    right: function() {
+      //this.ship.rotation.z -= this.rotationSpeed;
+      this.physBody.body.ApplyTorque(-1000);
+      this.glideAngle.rotation.y = -0.2;
+    },
+
+    left: function() {
+      // this.ship.rotation.z += this.rotationSpeed;
+      this.physBody.body.ApplyTorque(1000);
+      this.glideAngle.rotation.y = 0.2;
+    },
+
+    action1: function() {
+      this.weapon.fire();
+    },
+
+    action2: function() {
+    },
+
+    action3: function() {
+      var time = new Date().valueOf();
+      if(this.nextShields < time) {
+        this.nextShields = new Date().valueOf() + 10000;
+        this.godMode();
+      }
+    },
+
+    update: function() {
       if(this.dead) {
         this.kill();
         return;
       }
-
-      var actions = input.actions;
-
-      if(actions.shields) {
-        var time = new Date().valueOf();
-        if(this.nextShields < time) {
-          this.nextShields = new Date().valueOf() + 10000;
-          this.godMode();
-        }
-      }
       this.updateShields();
 
-      if(actions.guns_guns_guns) {
-        this.shoot();
-      }
-      this.guns.update();
-
       this.glideAngle.rotation.y = 0;
-      if(actions.rotate_right) {
-        this.ship.rotation.z -= this.rotationSpeed;
-        this.glideAngle.rotation.y = -0.2;
-      }
-      if(actions.rotate_left) {
-        this.ship.rotation.z += this.rotationSpeed;
-        this.glideAngle.rotation.y = 0.2;
-      }
-      if(actions.thrust) {
-        this.engineThrust();
-      } else {
-        this.sounds.engine.stop();
-      }
+
       this.updatePosition();
     },
 
@@ -199,20 +197,24 @@ var Player = (function() {
       direction.multiplyScalar(5);
       direction.add(this.physBody.motion())
       if(!this.sounds.engine.playing()) {
-        this.sounds.engine.play({loop: true});
+        this.sounds.engine.play({loop: false});
       }
-      ParticleManager.cone(position, direction, new THREE.Color(0x154492), 20);
+      Game.particles.cone(position, direction, new THREE.Color(0x154492), 20);
     },
 
     shoot: function() {
       var gun = new THREE.Vector3(0, -25, 0);
       var position = this.ship.localToWorld(gun);
       var direction = position.clone().sub(this.ship.position).normalize();
-      this.guns.shoot(position, direction, this.physBody.motion());
-    },
 
-    getShots: function() {
-      return this.guns.particles;
+      direction.multiplyScalar(20).add(this.physBody.motion());
+
+      time = new Date().valueOf();
+      if(time > this.nextShot) {
+        this.sounds.shot.play();
+        Game.particles.shoot(position, direction, new THREE.Color(0x99ff33), 100);
+        this.nextShot = time + 50;
+      }
     }
   };
 

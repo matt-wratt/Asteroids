@@ -136,3 +136,22 @@ var Sound = (function() {
   return Sound;
 
 }());
+
+var SoundPicker = (function() {
+
+  function SoundPicker(sounds) {
+    this.sounds = [];
+    for(var i = 0; i < sounds.length; ++i) {
+      this.sounds.push(SoundManager.loadAsync(sounds[i])); 
+    }
+  }
+
+  SoundPicker.prototype = {
+    play: function() {
+      this.sounds[Math.floor(Math.random() * this.sounds.length)].play();
+    }
+  };
+
+  return SoundPicker;
+
+}());

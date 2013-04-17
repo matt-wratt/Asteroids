@@ -10,39 +10,40 @@
     <script src="physics_manager.js"></script>
     <script src="particle_system.js"></script>
     <script src="particle.js"></script>
+    <script src="weapon.js"></script>
     <script src="guns.js"></script>
     <script src="map.js"></script>
     <script src="asteroid.js"></script>
     <script src="player.js"></script>
-    <script src="application.js"></script>
+    <script src="game.js"></script>
     <title>Asteroids</title>
   </head>
   <body>
-  <script>app = new Application()</script>
-  <div id="menu" style="display: none; text-align: center;">
-    <h1>Asteroids</h1>
-    <ul>
-      <li id="newGame">New Game</li>
-    </ul>
-    <h4>Help</h4>
-    <p>The aim is to shoot all the asteroids and progress to the next level</p>
-    <table>
-      <thead>
-        <tr><th>Key</th><th>Action</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>UP</td><td>Fire ship engine propeling the ship forwards</td></tr>
-        <tr><td>RIGHT</td><td>Rotate ship right</td></tr>
-        <tr><td>LEFT</td><td>Rotate ship left</td></tr>
-        <tr><td>DOWN</td><td>Activate phase shields, active for 2 seconds<br>and disabled to 10 seconds after use</td></tr>
-        <tr><td>SPACE</td><td>Guns guns guns</td></tr>
-      </tbody>
-    </table>
-  </div>
-  <div id="endGame" style="display: none; text-align: center;">
-    <h1>You Died!</h1>
-    <h4>But hey it's not all bad!</h4>
-    <h1>You destroyed <span id="killCount"></span> Asteroids!</h1>
-  </div>
+    <div id="menu" style="display: none; text-align: center;">
+      <h1>Asteroids</h1>
+      <ul>
+        <li id="newGame">New Game</li>
+      </ul>
+      <h4>Help</h4>
+      <p>The aim is to shoot all the asteroids and progress to the next level</p>
+      <table>
+        <thead>
+          <tr><th>Key</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>UP</td><td>Fire ship engine propeling the ship forwards</td></tr>
+          <tr><td>RIGHT</td><td>Rotate ship right</td></tr>
+          <tr><td>LEFT</td><td>Rotate ship left</td></tr>
+          <tr><td>DOWN</td><td>Activate phase shields, active for 2 seconds<br>and disabled to 10 seconds after use</td></tr>
+          <tr><td>SPACE</td><td>Guns guns guns</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div id="endGame" style="display: none; text-align: center;">
+      <h1>You Died!</h1>
+      <h4>But hey it's not all bad!</h4>
+      <h1>You destroyed <span id="killCount"></span> Asteroids!</h1>
+    </div>
+    <script>Game.init()</script>
   </body>
 </html>

@@ -1,7 +1,11 @@
+var ASTEROID = 'Asteroid';
 var Asteroid = (function() {
 
   function Asteroid(size, speed, position) {
-    this.sound = SoundManager.loadAsync('sounds/asteroid_die.wav');
+    this.sound = new SoundPicker([
+      'sounds/asteroid_die.wav'
+    ]);
+    this.type = ASTEROID;
     this.speed = speed * 1000;
     this.size = size;
     this.radius = this.size;
@@ -45,7 +49,9 @@ var Asteroid = (function() {
       userData: {ent: this},
       x: position.x,
       y: position.y,
-      radius: size
+      radius: size,
+      group: 'asteroid',
+      hits: ['player', 'projectile', 'asteroid']
     });
     this.physBody.applyImpulse(this.direction);
   }
@@ -56,31 +62,20 @@ var Asteroid = (function() {
       this.dead = true;
     },
 
-    update: function(map) {
-      if(this.dead) {
-        this.die(map);
-      } else {
-        this.updatePosition();
-      }
+    update: function() {
+      this.physBody.positionObject(this.mesh);
     },
 
-    die: function(map) {
+    die: function() {
       if(this.size > 20) {
         var size = this.size * 0.8;
         for(var i = 0; i < 2; ++i) {
-          map.addAsteroid(size, this.mesh.position);
+          Game.map.addAsteroid(size, this.mesh.position);
         }
       }
-      this.sound.play();
-      ParticleManager.explode(this.mesh.position, new THREE.Color(0xdd380c), this.size * 10);
-      map.map.remove(this.mesh);
+      Game.particles.explode(this.mesh.position, new THREE.Color(0xdd380c), this.size * 10);
       this.physBody.remove();
-      delete map.asteroids[this.id];
-    },
-
-    updatePosition: function() {
-      this.physBody.positionObject(this.mesh);
-      this.mesh.rotation.z += this.rotation;
+      this.sound.play();
     }
   };
 

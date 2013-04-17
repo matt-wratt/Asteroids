@@ -1,3 +1,10 @@
+var collisionGroups = {
+  player: 0x0001 << 1,
+  asteroid: 0x0001 << 2,
+  projectile: 0x0001 << 3,
+  all: 0xffff
+};
+
 var PhysicsManager = (function() {
 
   var Vec2 = Box2D.Common.Math.b2Vec2;
@@ -42,6 +49,7 @@ var PhysicsManager = (function() {
 
       if(entityDef.userData) bodyDef.userData = entityDef.userData;
       if(entityDef.angularDamping) bodyDef.angularDamping = entityDef.angularDamping;
+      if(entityDef.bullet) bodyDef.bullet = entityDef.bullet;
 
       bodyDef.type = Body.b2_dynamicBody;
 
@@ -55,6 +63,13 @@ var PhysicsManager = (function() {
 
       fixtureDefinition.shape = new CircleShape();
       fixtureDefinition.shape.SetRadius(entityDef.radius);
+
+      fixtureDefinition.filter.categories = 0x0000;
+      fixtureDefinition.filter.categoryBits |= collisionGroups[entityDef.group || 'all'];
+      fixtureDefinition.filter.maskBits = 0x0000;
+      for(var i = 0; i < entityDef.hits.length; ++i) {
+        fixtureDefinition.filter.maskBits |= collisionGroups[entityDef.hits[i]];
+      }
 
       body.CreateFixture(fixtureDefinition);
 
@@ -80,7 +95,7 @@ var PhysicsManager = (function() {
     }
   };
 
-  return new PhysicsManager;
+  return PhysicsManager;
 
 }());
 
@@ -105,14 +120,14 @@ var PhysicsBody = (function() {
     entityDef.x *= scale;
     entityDef.y *= scale;
     entityDef.radius *= scale;
-    this.body = PhysicsManager.addBody(entityDef);
+    this.body = Game.physics.addBody(entityDef);
     this.pos = new Vec2(entityDef.x, entityDef.y);
   }
 
   PhysicsBody.prototype = {
     applyImpulse: function(impulse, point) {
       impulse = tob2Vec2(impulse, scale);
-      point = !!point ? toB2Vec2(point, scale) : new Vec2();
+      point = !!point ? toB2Vec2(point, scale) : this.body.GetPosition();
       this.body.ApplyImpulse(impulse, point);
     },
 
@@ -136,12 +151,15 @@ var PhysicsBody = (function() {
     },
 
     positionObject: function(object) {
+      var x, y;
       var pos = this.body.GetPosition();
       this.pos.SetV(pos);
-      if(Math.abs(pos.x * invScale) > innerWidth/2) pos.x *= -0.99;
-      if(Math.abs(pos.y * invScale) > innerHeight/2) pos.y *= -0.99;
-      this.body.SetPosition(pos);
-      object.position.copy(to3Vector3(pos, invScale));
+      pos = to3Vector3(pos, invScale);
+      if((x = Math.abs(pos.x)) > innerWidth/2) pos.x -= (x / pos.x) * innerWidth;
+      if((y = Math.abs(pos.y)) > innerHeight/2) pos.y -= (y / pos.y) * innerHeight;
+      this.body.SetPosition(tob2Vec2(pos, scale));
+      object.position.copy(pos);
+      object.rotation.z = this.body.GetAngle();
     },
 
     motion: function() {
@@ -152,7 +170,7 @@ var PhysicsBody = (function() {
     },
 
     remove: function() {
-      PhysicsManager.removeBody(this.body);
+      Game.physics.removeBody(this.body);
     }
   };
 

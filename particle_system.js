@@ -1,5 +1,5 @@
-var ParticleManager = (function() {
-  
+var ParticleSystem = (function() {
+
   var vShader = [
       'attribute float size;',
       'attribute vec3 ccolor;',
@@ -28,8 +28,8 @@ var ParticleManager = (function() {
 
   ParticleSystem.prototype = {
     init: function() {
-      this.motion = []; 
-      this.decay = []; 
+      this.motion = [];
+      this.decay = [];
       var attributes = {
         start: {type: 'l', value: []},
         size: {type: 'f', value: []},
@@ -63,17 +63,19 @@ var ParticleManager = (function() {
       particleSystem = new THREE.ParticleSystem( this.geometry, shaderMaterial );
       particleSystem.dynamic = true;
       this.system = particleSystem;
-    },
-    addTo: function(scene) {
-      scene.add(this.system);
+      Game.scene.add(this.system);
+      Game.entities.add(this);
     },
     update: function() {
+      var x, y;
       var positions = this.geometry.vertices;
       var size = this.system.material.attributes.size;
       for(var i = 0; i < positions.length; ++i) {
         positions[i].x += this.motion[i].x;
         positions[i].y += this.motion[i].y;
         positions[i].z += this.motion[i].z;
+        if((x = Math.abs(positions[i].x)) > innerWidth/2) positions[i].x -= (x / positions[i].x) * innerWidth;
+        if((y = Math.abs(positions[i].y)) > innerHeight/2) positions[i].y -= (y / positions[i].y) * innerHeight;
         size.value[i] = Math.max(0, size.value[i] - this.decay[i]);
       }
       size.needsUpdate = true;
@@ -121,8 +123,39 @@ var ParticleManager = (function() {
       }
       this.system.material.attributes.ccolor.needsUpdate = true;
     },
+    shoot: function(position, direction, color, count) {
+      color = color || new THREE.Color(0xff0000);
+      count = count || 100;
+      var positions = this.geometry.vertices;
+      var motions = this.motion;
+      var colors = this.system.material.attributes.ccolor.value;
+      var start = this.nextParticle;
+      var end = (this.nextParticle + Math.floor(count)) % positions.length;
+      this.nextParticle = end;
+      var pCount = 0;
+      var headDisplacement = 10;
+      var tail = 5;
+      for(var i = start; i != end; i = (i + 1) % positions.length) {
+        var x = pCount / count;
+        if(x > 0.8) {
+          positions[i].copy(position);
+          positions[i].x += (Math.random() - 0.5) * headDisplacement;
+          positions[i].y += (Math.random() - 0.5) * headDisplacement;
+        } else {
+          var dir = new THREE.Vector3();
+          dir.copy(direction).multiplyScalar(-x).add(position);
+          positions[i].copy(dir);
+        }
+        motions[i].copy(direction);
+        this.system.material.attributes.ccolor.value[i].copy(color);
+        this.system.material.attributes.size.value[i] = 10.0;
+        this.decay[i] = 0.1;
+        pCount++;
+      }
+      this.system.material.attributes.ccolor.needsUpdate = true;
+    },
   };
 
-  return new ParticleSystem;
+  return ParticleSystem;
 
 }());
