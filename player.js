@@ -9,16 +9,13 @@ var Player = (function() {
       shield: SoundManager.loadAsync('sounds/shield.wav'),
       alert: SoundManager.loadAsync('sounds/alert.wav'),
       death: SoundManager.loadAsync('sounds/die.wav'),
-      shot: SoundManager.loadAsync('sounds/gun.wav'),
       engine: SoundManager.loadAsync('sounds/thrust.wav')
     };
     this.sounds.shield.volume = 0.5;
     this.sounds.alert.volume = 0.1;
-    this.sounds.shot.volume = 0.5;
     this.sounds.engine.volume = 0.2;
     this.lives = maxLives;
     this.ship = this.buildShip();
-    this.nextShot = 0;
     this.motion = new THREE.Vector3();
     this.torque = 20000;
     this.stoppingPower = 0.95;
