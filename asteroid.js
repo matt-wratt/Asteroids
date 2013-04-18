@@ -1,6 +1,8 @@
 var ASTEROID = 'Asteroid';
 var Asteroid = (function() {
 
+  var map = THREE.ImageUtils.loadCompressedTexture( 'textures/disturb_dxt1_mip.dds' );
+
   function Asteroid(size, speed, position) {
     this.dieSound = new SoundPicker([
       'sounds/asteroid_die_1.wav',
@@ -29,7 +31,6 @@ var Asteroid = (function() {
     ambient.g *= 0.2;
     ambient.b *= 0.2;
 
-    var map = THREE.ImageUtils.loadCompressedTexture( 'textures/disturb_dxt1_mip.dds' );
     var geometry = new THREE.SphereGeometry(size);
     var material = new THREE.MeshLambertMaterial({map: map, color: color, ambient: ambient});
     this.mesh = new THREE.Mesh(geometry, material);
