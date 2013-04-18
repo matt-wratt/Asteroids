@@ -177,11 +177,12 @@ var PhysicsBody = (function() {
       Game.physics.removeBody(this.body);
     },
 
-    pullTo: function(physBody) {
-      var direction = physBody.body.GetPosition();
-      direction.Subtract(this.body.GetPosition());
+    pullTo: function(physBody, g) {
+      g = g || 500;
+      var direction = physBody.body.GetPosition().Copy();
+      direction.Subtract(this.body.GetPosition().Copy());
       var distance = direction.Normalize();
-      direction.Multiply(physBody.body.GetMass() * 50 / distance);
+      direction.Multiply(g * physBody.body.GetMass() / Math.pow(distance, 2));
       this.applyForce(direction);
     },
 
