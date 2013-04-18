@@ -180,7 +180,8 @@ var PhysicsBody = (function() {
     pullTo: function(physBody) {
       var direction = physBody.body.GetPosition();
       direction.Subtract(this.body.GetPosition());
-      direction.Multiply(physBody.body.GetMass() / 10);      
+      var distance = direction.Normalize();
+      direction.Multiply(physBody.body.GetMass() * 50 / distance);
       this.applyForce(direction);
     },
 

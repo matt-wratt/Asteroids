@@ -54,6 +54,7 @@ var Asteroid = (function() {
       x: position.x,
       y: position.y,
       radius: size,
+      bullet: true,
       group: 'asteroid',
       hits: ['player', 'projectile', 'asteroid']
     });
