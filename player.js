@@ -20,7 +20,7 @@ var Player = (function() {
     this.ship = this.buildShip();
     this.nextShot = 0;
     this.motion = new THREE.Vector3();
-    this.rotationSpeed = 0.1;
+    this.torque = 20000;
     this.stoppingPower = 0.95;
     this.thrustOffset = -Math.PI / 2;
     this.nextShields = 0;
@@ -34,11 +34,11 @@ var Player = (function() {
       x: 0,
       y: 0,
       radius: 30,
-      angularDamping: 1.0
+      angularDamping: 20.0
     });
     this.weapon = new Weapon({
       owner: this,
-      texture: 'textures/spark1.png',
+      texture: 'textures/shot1.png',
       delay: 200,
       position: this.gunPosition,
       radius: 1,
@@ -51,10 +51,7 @@ var Player = (function() {
   Player.prototype = {
 
     onTouch: function(body) {
-      var ent = body.GetUserData().ent;
-      if(!(ent.owner && ent.owner == this)) {
-        this.die();
-      }
+      this.die();
     },
 
     die: function() {
@@ -130,14 +127,12 @@ var Player = (function() {
     },
 
     right: function() {
-      //this.ship.rotation.z -= this.rotationSpeed;
-      this.physBody.body.ApplyTorque(-1000);
+      this.physBody.body.ApplyTorque(-this.torque);
       this.glideAngle.rotation.y = -0.2;
     },
 
     left: function() {
-      // this.ship.rotation.z += this.rotationSpeed;
-      this.physBody.body.ApplyTorque(1000);
+      this.physBody.body.ApplyTorque(this.torque);
       this.glideAngle.rotation.y = 0.2;
     },
 
@@ -200,21 +195,6 @@ var Player = (function() {
         this.sounds.engine.play({loop: false});
       }
       Game.particles.cone(position, direction, new THREE.Color(0x154492), 20);
-    },
-
-    shoot: function() {
-      var gun = new THREE.Vector3(0, -25, 0);
-      var position = this.ship.localToWorld(gun);
-      var direction = position.clone().sub(this.ship.position).normalize();
-
-      direction.multiplyScalar(20).add(this.physBody.motion());
-
-      time = new Date().valueOf();
-      if(time > this.nextShot) {
-        this.sounds.shot.play();
-        Game.particles.shoot(position, direction, new THREE.Color(0x99ff33), 100);
-        this.nextShot = time + 50;
-      }
     }
   };
 

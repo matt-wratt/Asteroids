@@ -2,8 +2,11 @@ var ASTEROID = 'Asteroid';
 var Asteroid = (function() {
 
   function Asteroid(size, speed, position) {
-    this.sound = new SoundPicker([
-      'sounds/asteroid_die.wav'
+    this.dieSound = new SoundPicker([
+      'sounds/asteroid_die_1.wav',
+      'sounds/asteroid_die_2.wav',
+      'sounds/asteroid_die_3.wav',
+      'sounds/asteroid_die_4.wav'
     ]);
     this.type = ASTEROID;
     this.speed = speed * 1000;
@@ -75,7 +78,7 @@ var Asteroid = (function() {
       }
       Game.particles.explode(this.mesh.position, new THREE.Color(0xdd380c), this.size * 10);
       this.physBody.remove();
-      this.sound.play();
+      this.dieSound.play();
     }
   };
 

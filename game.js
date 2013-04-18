@@ -15,6 +15,7 @@ var Game = (function() {
     SoundManager.loadAsync('sounds/shield.wav');
     SoundManager.loadAsync('sounds/spawn.wav');
     SoundManager.loadAsync('sounds/thrust.wav');
+    this.nextMute = 0;
   }
 
   Game.prototype = {
@@ -60,6 +61,7 @@ var Game = (function() {
       this.inputs.bind(32, 'action1');
       this.inputs.bind(16, 'action2');
       this.inputs.bind(40, 'action3');
+      this.inputs.bind(77, 'mute');
     },
 
     newScene: function() {
@@ -159,12 +161,17 @@ var Game = (function() {
     },
 
     processInputs: function() {
+      var time = new Date().valueOf();
       if(this.inputs.actions.thrust) this.player.thrust();
       if(this.inputs.actions.right) this.player.right();
       if(this.inputs.actions.left) this.player.left();
       if(this.inputs.actions.action1) this.player.action1();
       if(this.inputs.actions.action2) this.player.action2();
       if(this.inputs.actions.action3) this.player.action3();
+      if(this.inputs.actions.mute && time > this.nextMute) {
+        this.nextMute = time + 100;
+        SoundManager.togglemute();
+      }
     },
 
     animateEndGame: function() {

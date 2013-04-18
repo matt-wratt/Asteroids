@@ -2,6 +2,11 @@ var Weapon = (function() {
 
   function Weapon(options) {
     this.options = options;
+    this.sound = new SoundPicker([
+      'sounds/gun_1.wav',
+      'sounds/gun_2.wav',
+      'sounds/gun_3.wav'
+    ]);
     var texture = THREE.ImageUtils.loadTexture(options.texture);
     options.material = new THREE.SpriteMaterial({map: texture, useScreenCoordinates: false, color: 0xA3CF16});
     this.firing = false;
@@ -41,9 +46,10 @@ var Weapon = (function() {
         direction: dir,
         radius: this.options.radius,
         ttl: this.options.ttl,
-        owner: this,
+        owner: this.options.owner,
         material: this.options.material
       }
+      this.sound.play();
       new Projectile(options);
     }
   };
@@ -60,10 +66,12 @@ var Projectile = (function() {
     options.userData = {ent: this};
     this.physBody = new PhysicsBody(options);
     var f = 100;
-    options.direction.multiplyScalar(f);
+    options.direction.multiplyScalar(f).add(options.owner.physBody.motion());
     this.physBody.applyImpulse(options.direction);
     this.sceneBody = new THREE.Sprite(options.material)
-    this.sceneBody.scale.set(0.02, 0.02, 1);
+    var s = 0.03;
+    this.sceneBody.scale.set(s, s, 1);
+    this.sceneBody.rotation = Math.atan2(options.direction.y, options.direction.x) - Math.PI / 2;
     Game.scene.add(this.sceneBody);
     Game.entities.add(this);
   }
@@ -71,7 +79,7 @@ var Projectile = (function() {
   Projectile.prototype = {
     update: function() {
       this.physBody.positionObject(this.sceneBody);
-      this.ttl--; 
+      this.ttl--;
       if(this.ttl == 0 || this._dead) this.remove();
     },
 
