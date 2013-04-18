@@ -35,6 +35,7 @@ var Player = (function() {
     });
     this.weapon = new Blaster(this, this.gunPosition);
     this.shotgun = new Shotgun(this, this.gunPosition);
+    this.homingShot = new HomingShot(this, this.gunPosition);
     Game.scene.add(this.ship);
     Game.entities.add(this);
   }
@@ -132,7 +133,8 @@ var Player = (function() {
     },
 
     action2: function() {
-      this.shotgun.fire();
+      // this.shotgun.fire();
+      this.homingShot.fire();
     },
 
     action3: function() {

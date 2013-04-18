@@ -137,6 +137,10 @@ var PhysicsBody = (function() {
       this.body.ApplyForce(force, point);
     },
 
+    applyTorque: function(torque) {
+      this.body.ApplyTorque(torque);
+    },
+
     teleport: function(position) {
       this.body.SetPosition(tob2Vec2(position, scale));
     },
@@ -171,6 +175,17 @@ var PhysicsBody = (function() {
 
     remove: function() {
       Game.physics.removeBody(this.body);
+    },
+
+    pullTo: function(physBody) {
+      var direction = physBody.body.GetPosition();
+      direction.Subtract(this.body.GetPosition());
+      direction.Multiply(physBody.body.GetMass() / 10);      
+      this.applyForce(direction);
+    },
+
+    velocity: function() {
+      return to3Vector3(this.body.GetLinearVelocity(), invScale);
     }
   };
 

@@ -45,6 +45,7 @@ var Weapon = (function() {
         y: pos.y,
         direction: dir,
         radius: this.options.radius,
+        force: this.options.force || 100,
         ttl: this.options.ttl,
         owner: this.options.owner,
         material: this.options.material
@@ -67,8 +68,7 @@ var Projectile = (function() {
     this.owner = options.owner;
     options.userData = {ent: this};
     this.physBody = new PhysicsBody(options);
-    var f = 100;
-    options.direction.multiplyScalar(f).add(options.owner.physBody.motion());
+    options.direction.multiplyScalar(options.force).add(options.owner.physBody.motion());
     this.physBody.applyImpulse(options.direction);
     this.sceneBody = new THREE.Sprite(options.material)
     var s = 0.03;
