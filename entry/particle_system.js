@@ -38,7 +38,7 @@ var ParticleManager = (function() {
       var uniforms = {
         time: {type: 'f', value: 0},
         color: {type: 'c', value: new THREE.Color(0xffffff)},
-        texture: {type: "t", value: THREE.ImageUtils.loadTexture("entry/textures/spark1.png")},
+        texture: {type: "t", value: THREE.ImageUtils.loadTexture("textures/spark1.png")},
       };
       var shaderMaterial = new THREE.ShaderMaterial( {
         uniforms:     uniforms,

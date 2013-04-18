@@ -1,7 +1,7 @@
 var Asteroid = (function() {
 
   function Asteroid(size, speed, position) {
-    this.sound = SoundManager.loadAsync('entry/sounds/asteroid_die.wav');
+    this.sound = SoundManager.loadAsync('sounds/asteroid_die.wav');
     this.speed = speed * 1000;
     this.size = size;
     this.radius = this.size;
@@ -22,7 +22,7 @@ var Asteroid = (function() {
     ambient.g *= 0.2;
     ambient.b *= 0.2;
 
-    var map = THREE.ImageUtils.loadCompressedTexture( 'entry/textures/disturb_dxt1_mip.dds' );
+    var map = THREE.ImageUtils.loadCompressedTexture( 'textures/disturb_dxt1_mip.dds' );
     var geometry = new THREE.SphereGeometry(size);
     var material = new THREE.MeshLambertMaterial({map: map, color: color, ambient: ambient});
     this.mesh = new THREE.Mesh(geometry, material);
