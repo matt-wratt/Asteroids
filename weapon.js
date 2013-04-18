@@ -28,7 +28,7 @@ var Weapon = (function() {
       }
       this.firing = false;
     },
-    releaseProjectile: function() {
+    getReleaseOptions: function() {
       var pos = new THREE.Vector3();
       var dir = new THREE.Vector3(0, -1, 0);
       this.options.position.localToWorld(pos);
@@ -37,7 +37,7 @@ var Weapon = (function() {
       this.options.direction = dir;
       this.options.x = pos.x;
       this.options.y = pos.y;
-      var options = {
+      return {
         group: 'projectile',
         hits: ['asteroid'],
         bullet: true,
@@ -49,8 +49,10 @@ var Weapon = (function() {
         owner: this.options.owner,
         material: this.options.material
       }
+    },
+    releaseProjectile: function() {
       this.sound.play();
-      new Projectile(options);
+      new Projectile(this.getReleaseOptions());
     }
   };
 

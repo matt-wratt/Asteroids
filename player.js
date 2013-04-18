@@ -33,14 +33,8 @@ var Player = (function() {
       radius: 30,
       angularDamping: 20.0
     });
-    this.weapon = new Weapon({
-      owner: this,
-      texture: 'textures/shot1.png',
-      delay: 200,
-      position: this.gunPosition,
-      radius: 1,
-      ttl: 100
-    });
+    this.weapon = new Blaster(this, this.gunPosition);
+    this.shotgun = new Shotgun(this, this.gunPosition);
     Game.scene.add(this.ship);
     Game.entities.add(this);
   }
@@ -138,6 +132,7 @@ var Player = (function() {
     },
 
     action2: function() {
+      this.shotgun.fire();
     },
 
     action3: function() {
