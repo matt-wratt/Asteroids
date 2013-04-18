@@ -58,6 +58,7 @@ var Asteroid = (function() {
       hits: ['player', 'projectile', 'asteroid']
     });
     this.physBody.applyImpulse(this.direction);
+    this.physBody.body.ApplyTorque(Math.random() * 10000);
   }
 
   Asteroid.prototype = {
