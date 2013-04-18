@@ -9,9 +9,7 @@ var Game = (function() {
 
   function Game() {
     SoundManager.loadAsync('sounds/alert.wav');
-    SoundManager.loadAsync('sounds/asteroid_die.wav');
     SoundManager.loadAsync('sounds/die.wav');
-    SoundManager.loadAsync('sounds/gun.wav');
     SoundManager.loadAsync('sounds/shield.wav');
     SoundManager.loadAsync('sounds/spawn.wav');
     SoundManager.loadAsync('sounds/thrust.wav');
