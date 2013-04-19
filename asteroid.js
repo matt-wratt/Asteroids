@@ -20,19 +20,33 @@ var Asteroid = (function() {
       (Math.random() - 0.5) * this.speed,
       0
     );
-    var browns = [
-      new THREE.Color(0xffffff),
-      new THREE.Color(0xcccccc),
-      new THREE.Color(0xaaaaaa)
+    var asteroidColors = [
+      0x3C4639,
+      0x98835B,
+      0x151B1F,
+      0x524026
     ];
-    var color = browns[Math.floor(Math.random() * browns.length)];
+    var color = new THREE.Color(0xffffff);
     var ambient = color.clone();
     ambient.r *= 0.2;
     ambient.g *= 0.2;
     ambient.b *= 0.2;
 
+    var faceIndices = [ 'a', 'b', 'c', 'd' ];
     var geometry = new THREE.SphereGeometry(size);
-    var material = new THREE.MeshLambertMaterial({map: map, color: color, ambient: ambient});
+    var colors = {};
+    for(var i = 0; i < geometry.faces.length; ++i) {
+      var f = geometry.faces[i];
+      var n = ( f instanceof THREE.Face3 ) ? 3 : 4;
+      for(var j = 0; j < n; ++j) {
+        vertexIndex = f[ faceIndices[ j ] ];
+        if(!colors[vertexIndex]) {
+          colors[vertexIndex] = new THREE.Color(asteroidColors[Math.floor(Math.random() * asteroidColors.length)]);
+        }
+        f.vertexColors[ j ] = colors[vertexIndex];
+      }
+    }
+    var material = new THREE.MeshLambertMaterial({color: color, ambient: ambient, vertexColors: THREE.VertexColors});
     this.mesh = new THREE.Mesh(geometry, material);
     this.mesh.rotation.set(
       Math.random() - 0.5,
