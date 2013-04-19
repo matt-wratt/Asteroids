@@ -13,9 +13,10 @@ var Map = (function() {
 
   Map.prototype = {
     addAsteroid: function(size, position) {
+      this.newAsteroids = this.newAsteroids || [];
       var asteroid = new Asteroid(size, Math.random() * this.speed, position);
       this.map.add(asteroid.mesh);
-      this.asteroids.add(asteroid);
+      this.newAsteroids.push(asteroid);
     },
 
     update: function() {
@@ -29,6 +30,12 @@ var Map = (function() {
           asteroid.update();
         }
       });
+      if(this.newAsteroids) {
+        for(var i = 0; i < this.newAsteroids.length; ++i) {
+          this.asteroids.add(this.newAsteroids[i]);
+        }
+        delete this.newAsteroids;
+      }
     },
 
     complete: function() {

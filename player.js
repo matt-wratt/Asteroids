@@ -2,6 +2,10 @@ var Player = (function() {
 
   var maxLives = 6;
   var Vec2 = Box2D.Common.Math.b2Vec2;
+  var SecondaryWeapon = {
+    'homing': HomingShot,
+    'shotgun': Shotgun
+  };
 
   function Player() {
     this.sounds = {
@@ -34,8 +38,7 @@ var Player = (function() {
       angularDamping: 20.0
     });
     this.weapon = new Blaster(this, this.gunPosition);
-    this.shotgun = new Shotgun(this, this.gunPosition);
-    this.homingShot = new HomingShot(this, this.gunPosition);
+    this.secondaryWeapon = new SecondaryWeapon[Game.secondary](this, this.gunPosition);
     Game.scene.add(this.ship);
     Game.entities.add(this);
   }
@@ -133,8 +136,7 @@ var Player = (function() {
     },
 
     action2: function() {
-      // this.shotgun.fire();
-      this.homingShot.fire();
+      this.secondaryWeapon.fire();
     },
 
     action3: function() {

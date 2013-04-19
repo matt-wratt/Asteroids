@@ -70,11 +70,13 @@ var Asteroid = (function() {
 
     update: function() {
       var self = this;
-      // Game.map.asteroids.each(function(asteroid) {
-      //   if(self != asteroid) {
-      //     self.physBody.pullTo(asteroid.physBody);
-      //   }
-      // });
+      if(Game.gravity) {
+        Game.map.asteroids.each(function(asteroid) {
+          if(self != asteroid) {
+            self.physBody.pullTo(asteroid.physBody);
+          }
+        });
+      }
       this.physBody.positionObject(this.mesh);
     },
 

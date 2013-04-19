@@ -144,6 +144,8 @@ var Game = (function() {
     },
 
     animateNewGame: function() {
+      this.secondary = document.getElementById('homing').checked ? 'homing' : 'shotgun';
+      this.gravity = document.getElementById('gravity').checked;
       this.entities.clear();
       this.newScene();
       this.entities.add(this.physics);

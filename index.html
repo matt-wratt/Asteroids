@@ -38,8 +38,21 @@
           <tr><td>LEFT</td><td>Rotate ship left</td></tr>
           <tr><td>DOWN</td><td>Activate shields, active for 2 seconds<br>and disabled to 10 seconds after use</td></tr>
           <tr><td>SPACE</td><td>Fire blaster</td></tr>
-          <tr><td>SHIFT</td><td>Fire homing bullet (attracted to asteroids by gravity)</td></tr>
+          <tr><td>SHIFT</td><td>
+            <label>
+              <input id="homing" name="secondary" type="radio" value="homing" checked/>
+              Fire homing bullet (attracted to asteroids by gravity)
+            </label>
+            <br/>
+            <label>
+              <input id="shotgun" name="secondary" type="radio" value="shotgun"/>
+              Fire shotgun
+            </label>
+          </td></tr>
           <tr><td>M</td><td>Toggle sound</td></tr>
+          <tr><td>M</td><td>
+            <label><input id="gravity" type="checkbox" checked/> Asteroids have gravity</label>
+          </td></tr>
         </tbody>
       </table>
     </div>

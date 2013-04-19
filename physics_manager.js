@@ -178,11 +178,11 @@ var PhysicsBody = (function() {
     },
 
     pullTo: function(physBody, g) {
-      g = g || 500;
+      g = g || 1000;
       var direction = physBody.body.GetPosition().Copy();
       direction.Subtract(this.body.GetPosition().Copy());
       var distance = direction.Normalize();
-      direction.Multiply(g * physBody.body.GetMass() / Math.pow(distance, 2));
+      direction.Multiply(g  * this.body.GetMass() * physBody.body.GetMass() / Math.pow(distance, 2));
       this.applyForce(direction);
     },
 

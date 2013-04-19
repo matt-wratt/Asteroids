@@ -34,7 +34,7 @@ var HomingProjectile = (function() {
   HomingProjectile.prototype.update = function() {
     var self = this;
     Game.map.asteroids.each(function(asteroid) {
-      self.physBody.pullTo(asteroid.physBody);
+      self.physBody.pullTo(asteroid.physBody, 30000);
     });
     Projectile.prototype.update.call(this);
     var velocity = this.physBody.velocity();
