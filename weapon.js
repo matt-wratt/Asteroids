@@ -8,7 +8,7 @@ var Weapon = (function() {
       'sounds/gun_3.wav'
     ]);
     var texture = THREE.ImageUtils.loadTexture(options.texture);
-    options.material = new THREE.SpriteMaterial({map: texture, useScreenCoordinates: false, color: 0xA3CF16});
+    options.material = new THREE.SpriteMaterial({map: texture, useScreenCoordinates: false, color: options.color || 0xA3CF16});
     this.firing = false;
     this.nextRound = 0;
     Game.entities.add(this);

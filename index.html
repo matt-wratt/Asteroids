@@ -26,6 +26,33 @@
       <ul>
         <li id="newGame">New Game</li>
       </ul>
+      <h4>Settings</h4>
+      <table>
+        <tbody>
+          <tr>
+            <td>Secondary Weapon</td>
+            <td>
+              <label>
+                <input id="homing" name="secondary" type="radio" value="homing" checked/>
+                Fire homing bullet (attracted to asteroids by gravity)
+              </label>
+              <br/>
+              <label>
+                <input id="shotgun" name="secondary" type="radio" value="shotgun"/>
+                Fire shotgun
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="gravity">Asteroids gravity</label>
+            </td>
+            <td>
+              <input id="gravity" type="checkbox" checked/>
+            </td>
+          </tr>
+        </tbody>
+      </table>
       <h4>Help</h4>
       <p>The aim is to shoot all the asteroids and progress to the next level</p>
       <table>
@@ -38,21 +65,8 @@
           <tr><td>LEFT</td><td>Rotate ship left</td></tr>
           <tr><td>DOWN</td><td>Activate shields, active for 2 seconds<br>and disabled to 10 seconds after use</td></tr>
           <tr><td>SPACE</td><td>Fire blaster</td></tr>
-          <tr><td>SHIFT</td><td>
-            <label>
-              <input id="homing" name="secondary" type="radio" value="homing" checked/>
-              Fire homing bullet (attracted to asteroids by gravity)
-            </label>
-            <br/>
-            <label>
-              <input id="shotgun" name="secondary" type="radio" value="shotgun"/>
-              Fire shotgun
-            </label>
-          </td></tr>
+          <tr><td>SHIFT</td><td>Fire secondary weapon </td></tr>
           <tr><td>M</td><td>Toggle sound</td></tr>
-          <tr><td>M</td><td>
-            <label><input id="gravity" type="checkbox" checked/> Asteroids have gravity</label>
-          </td></tr>
         </tbody>
       </table>
     </div>

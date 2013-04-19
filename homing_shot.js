@@ -4,6 +4,7 @@ var HomingShot = (function() {
     Weapon.call(this, {
       owner: owner,
       texture: 'textures/shot1.png',
+      color: 0x666666,
       delay: 500,
       force: 50,
       position: position,
