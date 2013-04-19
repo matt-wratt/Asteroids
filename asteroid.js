@@ -1,8 +1,6 @@
 var ASTEROID = 'Asteroid';
 var Asteroid = (function() {
 
-  var map = THREE.ImageUtils.loadCompressedTexture( 'textures/disturb_dxt1_mip.dds' );
-
   function Asteroid(size, speed, position) {
     this.dieSound = new SoundPicker([
       'sounds/asteroid_die_1.wav',
