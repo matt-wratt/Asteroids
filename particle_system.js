@@ -36,10 +36,18 @@ var ParticleSystem = (function() {
         ccolor: {type: 'c', value: []}
       }
       var uniforms = {
-        time: {type: 'f', value: 0},
         color: {type: 'c', value: new THREE.Color(0xffffff)},
         texture: {type: "t", value: THREE.ImageUtils.loadTexture("textures/spark1.png")},
       };
+
+      this.geometry = new THREE.Geometry();
+      for ( var i = 0; i < particles; ++i ) {
+        attributes.size.value.push(0.0);
+        attributes.ccolor.value.push(new THREE.Color(0xff0000));
+        this.geometry.vertices.push(new THREE.Vector3(99999999999999, 99999999999999, 0));
+        this.motion.push(new THREE.Vector3());
+      }
+
       var shaderMaterial = new THREE.ShaderMaterial( {
         uniforms:     uniforms,
         attributes:     attributes,
@@ -49,14 +57,6 @@ var ParticleSystem = (function() {
         depthTest:    false,
         transparent:  true
       });
-
-      this.geometry = new THREE.Geometry();
-      for ( var i = 0; i < particles; ++i ) {
-        attributes.size.value.push(0.0);
-        attributes.ccolor.value.push(new THREE.Color(0xff0000));
-        this.geometry.vertices.push(new THREE.Vector3());
-        this.motion.push(new THREE.Vector3());
-      }
 
       this.nextParticle = 0;
 
@@ -122,38 +122,7 @@ var ParticleSystem = (function() {
         this.decay[i] = Math.max(0.2, 10 * Math.random());
       }
       this.system.material.attributes.ccolor.needsUpdate = true;
-    },
-    shoot: function(position, direction, color, count) {
-      color = color || new THREE.Color(0xff0000);
-      count = count || 100;
-      var positions = this.geometry.vertices;
-      var motions = this.motion;
-      var colors = this.system.material.attributes.ccolor.value;
-      var start = this.nextParticle;
-      var end = (this.nextParticle + Math.floor(count)) % positions.length;
-      this.nextParticle = end;
-      var pCount = 0;
-      var headDisplacement = 10;
-      var tail = 5;
-      for(var i = start; i != end; i = (i + 1) % positions.length) {
-        var x = pCount / count;
-        if(x > 0.8) {
-          positions[i].copy(position);
-          positions[i].x += (Math.random() - 0.5) * headDisplacement;
-          positions[i].y += (Math.random() - 0.5) * headDisplacement;
-        } else {
-          var dir = new THREE.Vector3();
-          dir.copy(direction).multiplyScalar(-x).add(position);
-          positions[i].copy(dir);
-        }
-        motions[i].copy(direction);
-        this.system.material.attributes.ccolor.value[i].copy(color);
-        this.system.material.attributes.size.value[i] = 10.0;
-        this.decay[i] = 0.1;
-        pCount++;
-      }
-      this.system.material.attributes.ccolor.needsUpdate = true;
-    },
+    }
   };
 
   return ParticleSystem;
