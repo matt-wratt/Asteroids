@@ -53,7 +53,8 @@ var SoundManager = (function() {
     },
 
     togglemute: function() {
-      var gain = this._mainNode.connect('gain');
+      var gain = this._context.createGain();
+      this._mainNode.connect(gain);
       if(gain.gain.value>0) {
         gain.gain.value = 0;
       }
@@ -92,7 +93,8 @@ var SoundManager = (function() {
       sd.s.clip = currentClip;
 
       currentClip.buffer = sd.b;
-      var gain = currentClip.connect('gain');
+      var gain = this._context.createGain();
+      currentClip.connect(gain);
       gain.gain.value = volume;
       gain.connect(this._context.destination);
       currentClip.loop = looping;
