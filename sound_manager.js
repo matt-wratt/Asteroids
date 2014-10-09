@@ -53,12 +53,14 @@ var SoundManager = (function() {
     },
 
     togglemute: function() {
-      if(this._mainNode.gain.value>0) {
-        this._mainNode.gain.value = 0;
+      var gain = this._mainNode.connect('gain');
+      if(gain.gain.value>0) {
+        gain.gain.value = 0;
       }
       else {
-        this._mainNode.gain.value = 1;
+        gain.gain.value = 1;
       }
+      gain.connect(this._context.destination);
     },
 
     stopAll: function()
@@ -90,7 +92,9 @@ var SoundManager = (function() {
       sd.s.clip = currentClip;
 
       currentClip.buffer = sd.b;
-      currentClip.gain.value = volume;
+      var gain = currentClip.connect('gain');
+      gain.gain.value = volume;
+      gain.connect(this._context.destination);
       currentClip.loop = looping;
 
       currentClip.connect(this._mainNode);
