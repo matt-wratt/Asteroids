@@ -94,7 +94,7 @@ var SoundManager = (function() {
       currentClip.loop = looping;
 
       currentClip.connect(this._mainNode);
-      currentClip.noteOn(0);
+      currentClip.start(0);
 
       return true;
     }
@@ -124,7 +124,7 @@ var Sound = (function() {
     },
     stop: function() {
       if(this.clip) {
-        this.clip.noteOff(0);
+        this.clip.stop(0);
         delete this.clip;
       }
     },
