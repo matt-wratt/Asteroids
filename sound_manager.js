@@ -7,7 +7,7 @@ var SoundManager = (function() {
       alert('Web Audio API is not supported in this browser');
     }
 
-    this._mainNode = this._context.createGainNode(0);
+    this._mainNode = this._context.createGain(0);
     this._mainNode.connect(this._context.destination);
   }
 
