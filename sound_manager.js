@@ -5,6 +5,16 @@ var SoundManager = (function() {
       this._context = new webkitAudioContext();
     } catch (e) {
       alert('Web Audio API is not supported in this browser');
+
+      this.loadAsync = function(path, _) {
+        return new Sound(path)
+      }
+      var noop = function() {}
+      this.togglemute = noop
+      this.stopAll = noop
+      this.playSound = noop
+
+      return
     }
 
     this._mainNode = this._context.createGain(0);
